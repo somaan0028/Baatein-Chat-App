@@ -20,14 +20,13 @@ const UploadForm = ({ setProfilePicUrl }) => {
   };
 
   return (
-    <form>
+    <form className="upload-image-form">
       <label className="file-upload-container">
-        <div className="file-upload" >Upload File<br/>(optional)</div>
+        <div className="file-upload" >Upload Profile Picture<br/>(optional)</div>
         <input type="file" className="file-upload input-hide" onChange={handleChange} />
       </label>
       <div className="output">
-        { error && <div className="error">{ error }</div>}
-        {/* { file && <div>{ file.name }</div> } */}
+        { error && <div className="bad-msg">{ error }</div>}
         { file && <ProgressBar file={file} setFile={setFile} setProfilePicUrl={setProfilePicUrl} /> }
       </div>
     </form>

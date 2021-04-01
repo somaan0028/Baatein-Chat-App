@@ -3,24 +3,18 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import { useState, useEffect } from 'react';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { useState } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import { projectFirestore } from '../firebase';
 import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import UploadForm from "./UploadForm"
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import UploadForm from "./UploadForm";
+import { useAuth } from "../contexts/AuthContext"
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,32 +38,54 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ProfileSetup() {
   const classes = useStyles();
+  const { currentUser } = useAuth()
 
   const [username, setUsername] = useState(null);
   const [usernameError, setUsernameError] = useState('');
+  const [isUsernameUnique, setIsUsernameUnique] = useState(null);
+  const [isLoading, setisLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date('2014-08-18T21:11:54'));
   const [profilePicUrl, setProfilePicUrl] = useState(null);
 
   const handleUsername = async (e) => {
-    let username = e.target.value;
-    console.log(username);
-    // check if user name is unique, then do setUsername(username);
-    // projectFirestore.collection('profiles').where('username', '==', username).get().then(snapshot => {
-    //     if(snapshot.length==0){
-    //         setUsernameError('');
-    //         setUsername(username);
-    //         console.log("Good Username");
-    //     } else {
-    //         setUsernameError('This username is already taken :(');
-    //     }
-    // });
-    // projectFirestore.collection('profiles').get().then(snapshot => {
-    //     console.log(snapshot);
-        
-    // });
-    const profiles_ref = projectFirestore.collection('conversations');
-    const data = await profiles_ref.get();
-    console.log(data.docs);
+    let entered_username = e.target.value;
+    console.log(entered_username);
+    setUsername(entered_username);
+
+    // if empty username field
+    if(entered_username.length == 0){
+      console.log("Empty field");
+      setUsernameError('');
+      setIsUsernameUnique(null);
+      setisLoading(false);
+      return
+    };
+    
+    setisLoading(true);
+    
+    // checking if username is unique or not
+    projectFirestore.collection("profiles").where("username", "==", entered_username).get()
+    .then((querySnapshot) => {
+      setisLoading(false);
+      console.log(querySnapshot.docs.length);
+
+      if(querySnapshot.docs.length == 0){
+          // setUsername(username);
+          setUsernameError('Good Username');
+          setIsUsernameUnique(true);
+          console.log("Good Username");
+      } else {
+          setUsernameError('This username is already taken :(');
+          setIsUsernameUnique(false);
+      }
+      // querySnapshot.forEach((doc) => {
+      //     console.log(doc.data());
+      // });
+    })
+    .catch((err)=>{
+      setisLoading(false);
+      console.log("Error while getting document");
+    });
   }
 
   const handleDateChange = (date) => {
@@ -78,7 +94,28 @@ export default function ProfileSetup() {
 
   const handleProfileCreation = (e) => {
     e.preventDefault();
-
+    let profileToSave = {
+      username: username,
+      userId: "dummyId",
+      dateOfBirth: selectedDate,
+      profilePicture: profilePicUrl,
+      contacts: []
+    };
+    // console.log(profileToSave);
+    setisLoading(true);
+    projectFirestore.collection("profiles").doc(currentUser.uid).set(profileToSave)
+    .then((docRef) => {
+      setisLoading(false);
+      console.log(docRef.docs);
+      projectFirestore.collection("profiles").doc(docRef.id).get()
+     .then(snap => {
+        console.log('Here is the document you wrote to', snap.data());
+     })
+    })
+    .catch((error) => {
+        console.error("Error adding document: ", error);
+        setisLoading(false);
+    });
   }
 
   return (
@@ -116,8 +153,8 @@ export default function ProfileSetup() {
             autoFocus
             style={{marginBottom: "0"}}
           />
-          <label for="Username" className="username-label">(Others will use your Username to search for you)</label>
-            <span style={{color: "red", fontSize: "10px"}}>{usernameError}</span>
+          <label htmlFor="Username" className="username-label">(Others will use your Username to search for you)</label>
+          { isLoading ? <CircularProgress size={16} color="pink"/> : <span className={isUsernameUnique ? "good-msg":"bad-msg"} >{usernameError}</span>}
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
                 disableToolbar
@@ -134,7 +171,7 @@ export default function ProfileSetup() {
                 />
             </MuiPickersUtilsProvider>
 
-            {<img src={profilePicUrl ? profilePicUrl : "https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png"} 
+            {<img alt="Profile Picture" src={profilePicUrl ? profilePicUrl : "https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png"} 
             style={{
                 border: '1px solid #f50057', 
                 borderRadius: '50%', 
@@ -151,12 +188,10 @@ export default function ProfileSetup() {
             color="primary"
             className={classes.submit}
             onClick={handleProfileCreation}
-            disabled={!username}
+            disabled={!isUsernameUnique && !isLoading}
           >
             Let's Go!
           </Button>
-          {/* <h1>{profilePicUrl && "We got the url:"+profilePicUrl}</h1> */}
-        {/* </form> */}
       </div>
     </Container>
   );

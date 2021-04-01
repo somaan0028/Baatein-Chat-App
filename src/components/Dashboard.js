@@ -1,13 +1,19 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Card, Button, Alert } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link, useHistory } from "react-router-dom"
 import ProfileSetup from "./ProfileSetup"
- 
+import { CircularProgress } from '@material-ui/core';
+import ChatPanel from './ChatPanel';
+import { projectFirestore } from '../firebase';
+
+
 export default function Dashboard() {
   const [error, setError] = useState("")
   const { currentUser, logout } = useAuth()
   const history = useHistory()
+  const [ isLoading , setIsLoading ] = useState(true);
+  const [ userProfile, setUserProfile ] = useState(null);
 
   async function handleLogout() {
     setError("")
@@ -20,9 +26,31 @@ export default function Dashboard() {
     }
   }
 
+  // useEffect(()=>{
+  //   console.log(currentUser.uid);
+  //   console.log("Going to check for current user profile")
+  //   projectFirestore.collection("profiles").doc(currentUser.uid).get()
+  //   .then((docRef)=>{
+  //     console.log(docRef.data());
+  //     setIsLoading(false);
+  //     if(!docRef.data()){
+  //       console.log("No user profile found");
+  //       setUserProfile(null);
+  //     }else{
+  //       console.log("User profile found");
+  //       setUserProfile(docRef.data());
+  //     }
+  //   })
+  //   .catch((err)=>{
+  //     setIsLoading(false);
+  //     setUserProfile(null);
+  //     console.log(err);
+  //   })
+  // }, [])
+
   return (
     <>
-      <Card>
+      {/* <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -36,8 +64,13 @@ export default function Dashboard() {
         <Button variant="link" onClick={handleLogout}>
           Log Out
         </Button>
-      </div>
-      <ProfileSetup />
+      </div> */}
+
+      {/* { isLoading && <CircularProgress size={50}/> }
+      {!isLoading && userProfile && <ChatPanel /> }
+      {!isLoading && !userProfile && <ProfileSetup /> } */}
+
+      <ChatPanel />
     </>
 
   )

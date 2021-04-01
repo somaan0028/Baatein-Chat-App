@@ -1,3 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+*, h1, h2, h2, h4, h5, h6, p{
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary: #f50057;
+    --darkText: #222222;
+}
+
+.scroll-section::-webkit-scrollbar {
+    width: 12px;               /* width of the entire scrollbar */
+}
+  
+.scroll-section::-webkit-scrollbar-track {
+    background: white;        /* color of the tracking area */
+}
+  
+.scroll-section::-webkit-scrollbar-thumb {
+    background-color: var(--primary);    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid white;  /* creates padding around scroll thumb */
+}
+
 /* progress bar styles */
 .progress-bar{
   height: 5px;
@@ -6,7 +32,23 @@
 }
 
 .username-label{
-    margin: 5px 0 30px 0;
+    margin: 5px 0 5px 0;
+    color: #9e7373;
+}
+.good-msg{
+    font-size: 15px;
+    color: green;
+}
+.bad-msg{
+    font-size: 15px;
+    color: red;
+}
+
+.upload-image-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .MuiFormControl-marginNormal{
@@ -43,4 +85,373 @@
 .file-upload-container .input-hide:hover{
     background-color: rgb(250, 81, 109);
 
+}
+
+.chat-panel{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 98%;
+    height: 98%;
+    max-width: 1000px;
+    max-height: 600px;
+    box-shadow: 0 0 10px #222222;
+    background-color: white;
+    font-size: 15px;
+    font-family: 'Fredoka One', cursive;
+    overflow: hidden;
+}
+
+.chat-panel .header-chat-panel{
+    height: 70px;
+    background-color: var(--primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    color: white;
+}
+
+
+
+.chat-panel .header-chat-panel .user-details-container{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.chat-panel .header-chat-panel .user-details-container img{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin: 14px;
+}
+
+.chat-panel .header-chat-panel .user-details-container .user-info{
+    height: 100%;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.85em; 
+}
+.chat-panel .header-chat-panel .user-details-container .user-info h2{
+    font-size: 1.92em;
+
+}
+
+.chat-panel .header-chat-panel .header-buttons{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+.chat-panel .header-chat-panel .header-buttons .logout-button{
+    margin-left: 10px;
+}
+
+.chat-panel .header-chat-panel .header-buttons .logout-button .logout-icon{
+    margin-right: 5px;    
+}
+
+.chat-panel-body{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: flex-start;
+    background-color: #f9fbfc;
+}
+
+.chat-panel-body .contacts-area{
+    width: 510px;
+    background-color: transparent;
+
+}
+.chat-panel-body .contacts-area .chats-heading{
+    font-size: 2.5em;
+    color: var(--darkText);
+    text-align: center;
+    padding: 14px 0;
+}
+.chat-panel-body .contacts-area .contacts-list{
+    display: flex;
+    flex-direction: column;
+    height: 390px;
+    overflow-y: scroll;
+    padding-top: 9px;
+}
+
+.chat-panel-body .contacts-area .contacts-list .single-contact{
+    margin: 5px 15px 5px 13px;
+    padding: 5px 10px;
+    height: 100px;
+    min-height: 76px;
+    background-color: white;
+    color: var(--darkText);
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    border-radius: 20px;
+    box-shadow: 0 0 5px 3px rgb(173 173 173 / 34%);
+    cursor: pointer;
+    transition: 0.2s all;
+
+}
+
+.chat-panel-body .contacts-area .contacts-list .single-contact:hover{
+    background-color: rgb(231, 231, 231);
+
+}
+.chat-panel-body .contacts-area .contacts-list .single-contact img{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin: 14px 13px 14px 6px;
+}
+
+.chat-panel-body .contacts-area .contacts-list .single-contact .contact-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;    
+    width: 100%;
+}
+
+.chat-panel-body .contacts-area .contacts-list .single-contact .contact-info .contact-name{
+    font-size: 1.1em;
+}
+.chat-panel-body .contacts-area .contacts-list .single-contact .contact-info .recent-msg{
+    font-size: 0.75em;
+    font-family: sans-serif;
+    color: #909090;
+}
+
+.chat-panel-body .contacts-area .contacts-list .single-contact .contact-info .time-and-notification{
+    width: 50px;
+    color: var(--primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.chat-panel-body .contacts-area .contacts-list .single-contact .contact-info .recent-msg-time{
+    color: var(--primary);
+    font-size: 0.7em;
+    margin-bottom: 5px;
+    font-family: cursive;
+}
+
+.chat-panel-body .contacts-area .contacts-list .single-contact .contact-info .no-of-msgs{
+    background-color: var(--primary);
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    width: -moz-fit-content;
+    width: fit-content;
+    font-family: cursive;
+
+}
+
+.chat-panel-body .contacts-area .contacts-list .selected-contact{
+    background-color: #222222;
+}
+.chat-panel-body .contacts-area .contacts-list .selected-contact:hover{
+    background-color: #222222;
+
+}
+
+.chat-panel-body .contacts-area .contacts-list .selected-contact .contact-info .contact-name{
+    color: white;
+}
+.chat-panel-body .contacts-area .contacts-list .selected-contact .contact-info .recent-msg,
+.chat-panel-body .contacts-area .contacts-list .selected-contact .contact-info .recent-msg-time{
+    color: rgb(206, 206, 206);
+
+}
+
+
+
+
+
+
+.chat-panel .messaging-area{
+    width: 100%;
+    height: 532px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.chat-panel .header-msg-area{
+    height: 60px;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    color: white;
+    box-shadow: 0 0 7px 1px #d0d0d0;
+    width: 100%;
+}
+
+
+
+
+.chat-panel .header-msg-area .user-details-container{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.chat-panel .header-msg-area .user-details-container img{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin: 14px;
+}
+
+.chat-panel .header-msg-area .user-details-container .user-info{
+    height: 100%;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.85em; 
+}
+.chat-panel .header-msg-area .user-details-container .user-info h2{
+    font-size: 1.5em;
+    color: #222222;
+
+}
+.chat-panel .header-msg-area .user-details-container .user-info p{
+    color: #797979;
+    font-family: cursive;
+
+}
+
+
+
+
+
+
+
+
+.chat-panel .messaging-area .chat-msg-area{
+    flex-grow: 1;
+    width: 100%;
+    background-color: white;
+    margin: 10px 0;
+    box-shadow: 0 0 7px 1px #d0d0d0;
+    overflow-y: scroll;
+}
+
+.chat-panel .messaging-area .chat-msg-area .single-msg-container{
+    min-height: 50px;
+    height: fit-content;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+}
+.chat-panel .messaging-area .chat-msg-area .single-msg{
+    height: 100%;
+    width: fit-content;
+    background-color: rgb(216, 216, 216);
+    padding: 20px;
+    border-radius: 20px;
+    padding: 7px 15px;
+    border-top-left-radius: 0;
+}
+.chat-panel .messaging-area .chat-msg-area .my-own-msg{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.chat-panel .messaging-area .chat-msg-area .my-own-msg .single-msg{
+    background-color: var(--primary);
+    color: white;
+    border-radius: 20px;
+    border-bottom-right-radius: 0;
+}
+
+.chat-panel .messaging-area .chat-msg-area .single-msg .msg-text{
+    font-family: cursive;
+    font-size: 1em;
+}
+.chat-panel .messaging-area .chat-msg-area .single-msg .msg-time{
+    font-size: 0.6em;
+    text-align: right;
+    margin-top: 3px;
+    font-family: cursive;
+}
+
+
+
+
+
+
+
+
+.chat-panel .messaging-area .typing-area{
+    width: 100%;
+    height: 60px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 7px 1px #d0d0d0;
+}
+
+.chat-panel .messaging-area .typing-area form{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 40px;
+    background-color: white;
+    margin: 10px 0 10px 0;
+    box-shadow: 0 0 7px 1px #d0d0d0;
+
+}
+.chat-panel .messaging-area .typing-area form .typing-field{
+    width: 100%;
+    height: 100%;
+    padding: 10px 10px 10px 20px;
+    border-radius: 30px;
+    border: 0;
+    background-color: #f9fbfc;
+    transition: 0.3s all;
+    margin-right: 4px;
+}
+
+.chat-panel .messaging-area .typing-area form .typing-field:hover,
+.chat-panel .messaging-area .typing-area form .typing-field:focus{
+    outline: none;
+    box-shadow: 0 0 10px #92929283;
+}
+.chat-panel .messaging-area .typing-area form .submit-buttom{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    height: 40px;
+    padding: 10px;
+    color: white;
+    background-color: var(--primary);
+    border: 0;
+    margin-left: 10px;
+}
+
+.chat-panel .messaging-area .typing-area form .submit-buttom .submit-icon{
+    background-color: var(--primary);
 }
