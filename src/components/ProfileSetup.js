@@ -14,6 +14,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import UploadForm from "./UploadForm";
 import { useAuth } from "../contexts/AuthContext"
+import { useHistory } from "react-router-dom"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,9 +37,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfileSetup() {
+export default function ProfileSetup({ setUserProfile }) {
   const classes = useStyles();
   const { currentUser } = useAuth()
+  const history = useHistory()
 
   const [username, setUsername] = useState(null);
   const [usernameError, setUsernameError] = useState('');
@@ -106,10 +108,12 @@ export default function ProfileSetup() {
     projectFirestore.collection("profiles").doc(currentUser.uid).set(profileToSave)
     .then((docRef) => {
       setisLoading(false);
-      console.log(docRef.docs);
+      console.log(docRef);
       projectFirestore.collection("profiles").doc(docRef.id).get()
      .then(snap => {
         console.log('Here is the document you wrote to', snap.data());
+        // history.push("/");
+        setUserProfile(snap.data());
      })
     })
     .catch((error) => {

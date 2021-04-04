@@ -15,38 +15,29 @@ export default function Dashboard() {
   const [ isLoading , setIsLoading ] = useState(true);
   const [ userProfile, setUserProfile ] = useState(null);
 
-  async function handleLogout() {
-    setError("")
 
-    try {
-      await logout()
-      history.push("/login")
-    } catch {
-      setError("Failed to log out")
-    }
-  }
 
-  // useEffect(()=>{
-  //   console.log(currentUser.uid);
-  //   console.log("Going to check for current user profile")
-  //   projectFirestore.collection("profiles").doc(currentUser.uid).get()
-  //   .then((docRef)=>{
-  //     console.log(docRef.data());
-  //     setIsLoading(false);
-  //     if(!docRef.data()){
-  //       console.log("No user profile found");
-  //       setUserProfile(null);
-  //     }else{
-  //       console.log("User profile found");
-  //       setUserProfile(docRef.data());
-  //     }
-  //   })
-  //   .catch((err)=>{
-  //     setIsLoading(false);
-  //     setUserProfile(null);
-  //     console.log(err);
-  //   })
-  // }, [])
+  useEffect(()=>{
+    console.log(currentUser.uid);
+    console.log("Going to check for current user profile")
+    projectFirestore.collection("profiles").doc(currentUser.uid).get()
+    .then((docRef)=>{
+      console.log(docRef.data());
+      setIsLoading(false);
+      if(!docRef.data()){
+        console.log("No user profile found");
+        setUserProfile(null);
+      }else{
+        console.log("User profile found");
+        setUserProfile(docRef.data());
+      }
+    })
+    .catch((err)=>{
+      setIsLoading(false);
+      setUserProfile(null);
+      console.log(err);
+    })
+  }, [])
 
   return (
     <>
@@ -66,11 +57,11 @@ export default function Dashboard() {
         </Button>
       </div> */}
 
-      {/* { isLoading && <CircularProgress size={50}/> }
-      {!isLoading && userProfile && <ChatPanel /> }
-      {!isLoading && !userProfile && <ProfileSetup /> } */}
-
-      <ChatPanel />
+      { isLoading && <CircularProgress className="dashboard-loading-sign" size={50}/> }
+      {!isLoading && userProfile && <ChatPanel userProfile={userProfile} /> }
+      {!isLoading && !userProfile && <ProfileSetup setUserProfile={setUserProfile} /> }
+      {/* <CircularProgress className="dashboard-loading-sign" size={80}/> */}
+      {/* <ChatPanel /> */}
     </>
 
   )
