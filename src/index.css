@@ -204,6 +204,8 @@
     width: 100%;
     height: fit-content;
     padding-top: 30px;
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-panel-body .contacts-area .contacts-list .no-contacts-match-search .no-contacts-text{
@@ -211,12 +213,17 @@
     font-size: 1.4em;
     text-align: center;
 }
+.chat-panel-body .contacts-area .contacts-list .no-contacts-match-search .sad-emoji{
+    width: 100px;
+    height: auto;
+    margin: 20px auto;
+}
 
 .chat-panel-body .contacts-area .contacts-list .single-contact{
     position: relative;
     margin: 5px 15px 5px 13px;
-    padding: 0;
-    height: 100px;
+    padding: 5px 13px;
+    height: 80px;
     min-height: 76px;
     background-color: white;
     color: var(--darkText);
@@ -335,6 +342,17 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    position: relative;
+}
+.chat-panel .messaging-area .no-contact-selected{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #c1c1c1;
+    font-size: 1.5em;
+    text-align: center;
+    width: 100%;
 }
 
 .chat-panel .header-msg-area{
@@ -398,6 +416,24 @@
     margin: 10px 0;
     box-shadow: 0 0 7px 1px #d0d0d0;
     overflow-y: scroll;
+    position: relative;
+}
+.chat-panel .messaging-area .chat-msg-area .messages-loading-sign{
+    color: var(--primary);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+.chat-panel .messaging-area .chat-msg-area .start-the-conversation{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #c1c1c1;
+    font-size: 1.5em;
+    text-align: center;
+    width: 100%;
+
 }
 
 .chat-panel .messaging-area .chat-msg-area .single-msg-container{

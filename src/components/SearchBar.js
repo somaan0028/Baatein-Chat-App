@@ -21,6 +21,7 @@ export default function searchBar({ setContactsList, backUpContactsList }) {
             setContactsList(
                 <div className="no-contacts-match-search">
                     <p className="no-contacts-text">No Contacts match<br/>your search</p>
+                    <img className="sad-emoji" alt="Sad Emoji" src="https://toppng.com/uploads/preview/sad-face-transparent-png-crying-emoji-transparent-background-11562873850hiicomfwuq.png" />
                 </div>
             )
         }else{

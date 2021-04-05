@@ -9,7 +9,7 @@ import MessagingArea from './MessagingArea';
 
 export default function ChatPanel({ userProfile }) {
   
-    const [activeContactID, setActiveContactID] = useState(null);
+    const [activeContact, setActiveContact] = useState(null);
     return(
         <div className="chat-panel">
             
@@ -17,9 +17,9 @@ export default function ChatPanel({ userProfile }) {
 
             <div className="chat-panel-body">
                 
-                <ContactsArea activeContactID={activeContactID} setActiveContactID={setActiveContactID} />
+                <ContactsArea activeContact={activeContact} setActiveContact={setActiveContact} />
 
-                <MessagingArea activeContactID={activeContactID} />
+                <MessagingArea activeContact={activeContact} />
                 
             </div>
 

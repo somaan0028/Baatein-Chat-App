@@ -5,7 +5,7 @@ import { projectFirestore } from '../firebase';
 import { CircularProgress } from '@material-ui/core';
 import { useAuth } from "../contexts/AuthContext"
 
-const ContactsArea = ({ activeContactID, setActiveContactID }) => {
+const ContactsArea = ({ activeContact, setActiveContact }) => {
 
     const { currentUser } = useAuth();
     const [contacts, setContacts] = useState([]);
@@ -13,13 +13,6 @@ const ContactsArea = ({ activeContactID, setActiveContactID }) => {
     const [backUpContactsList, setbackUpContactsList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const generateConvoId = (id_1, id_2) => {
-        if(id_1 > id_2){
-            return id_1 + "-" + id_2;
-        }else{
-            return id_2 + "-" + id_1;
-        }
-    }
 
     useEffect(()=>{
         projectFirestore.collection("contacts").doc(currentUser.uid).get()
@@ -47,8 +40,8 @@ const ContactsArea = ({ activeContactID, setActiveContactID }) => {
                     id={contact.userID} 
                     contactName={docRef.data().username}
                     contactDetails={contact} 
-                    activeContactID={activeContactID} 
-                    setActiveContactID={setActiveContactID} 
+                    activeContact={activeContact} 
+                    setActiveContact={setActiveContact} 
                 />);
             }
             if(tempArray.length == contacts.length){
@@ -63,7 +56,7 @@ const ContactsArea = ({ activeContactID, setActiveContactID }) => {
 
     // to add a className to selected contact, we filter through the contactsList and replace the one selected with a new component.
     useEffect(()=>{
-        console.log("activeContactID changed!!!!!");
+        console.log("activeContact changed!!!!!");
         let newContactList = [];
         contactsList.forEach((contactComponent)=>{
             newContactList.push(<SingleContact 
@@ -71,15 +64,15 @@ const ContactsArea = ({ activeContactID, setActiveContactID }) => {
                 id={contactComponent.props.id} 
                 contactName={contactComponent.props.contactName}
                 contactDetails={contactComponent.props.contactDetails} 
-                activeContactID={activeContactID} 
-                setActiveContactID={setActiveContactID} 
+                activeContact={activeContact} 
+                setActiveContact={setActiveContact} 
             />);
             // console.log(contactComponent);
         })
         setContactsList(newContactList);
         setbackUpContactsList(newContactList);
         
-    }, [activeContactID])
+    }, [activeContact])
 
     return (
         <div className="contacts-area">
