@@ -206,6 +206,8 @@
     padding-top: 30px;
     display: flex;
     flex-direction: column;
+
+    
 }
 
 .chat-panel-body .contacts-area .contacts-list .no-contacts-match-search .no-contacts-text{

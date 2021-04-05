@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react"
-import IconButton from '@material-ui/core/IconButton';
-import SendIcon from '@material-ui/icons/Send';
 import SingleMessage from './SingleMessage';
 import { useAuth } from "../contexts/AuthContext"
 import { projectFirestore } from '../firebase';
 import { CircularProgress } from '@material-ui/core';
+import TypingArea from './TypingArea';
 
 const MessagingArea = ({ activeContact }) => {
     // console.log("The active contact ID is: ");
@@ -13,6 +12,9 @@ const MessagingArea = ({ activeContact }) => {
     const [messages, setMessages] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [displayMessages, setDisplayMessages] = useState(null);
+    const [convoID, setConvoID] = useState(null);
+    const [removeListener, setRemoveListener] = useState(null);
+    const [isListenerSet, setIsListenerSet] = useState(false);
 
     const generateConvoID = (id_1, id_2) => {
         if(id_1 > id_2){
@@ -24,16 +26,29 @@ const MessagingArea = ({ activeContact }) => {
 
     useEffect(()=>{
         if(!activeContact){return};
+
+        // as function is running again, it means activeContact changed so we need to remove previous listener
+        if(isListenerSet){
+            console.log("removed the listener");
+            removeListener();
+        };
+
+        // resetting state for new messages from the new activeContact
+        setMessages([]);
         setDisplayMessages(null);
+        
         setIsLoading(true);
-        let convoID = generateConvoID(currentUser.uid, activeContact.userID);
-        console.log(convoID);
-        projectFirestore.collection("conversations").doc(convoID).get()
-        .then((docRef)=>{
+        let conversationID = generateConvoID(currentUser.uid, activeContact.userID);
+        console.log(conversationID);
+        setConvoID(conversationID);
+
+        var unsubscribe = projectFirestore.collection("conversations").doc(conversationID).onSnapshot((docRef)=>{
             if(docRef.data()){
+                setIsListenerSet(true);
                 var received_messages = docRef.data().messages;
                 console.log(received_messages);
                 var newMessagesArray = [];
+                console.log(conversationID);
                 received_messages.forEach((message)=>{
                     newMessagesArray.push(
                         <SingleMessage message={message} />
@@ -42,25 +57,20 @@ const MessagingArea = ({ activeContact }) => {
                 setMessages(received_messages);
                 setDisplayMessages(newMessagesArray);
             }
+
+            // so that we know that a listener exists
+            setIsListenerSet(true);
+            setRemoveListener(()=>unsubscribe);
+
             setIsLoading(false);
-        })
-        .catch((err)=>{
-            console.log(err);
-            setIsLoading(false);
-        })
+
+            // scrolling to latest msg
+            var objDiv = document.querySelector(".chat-msg-area");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        });
+
+
     }, [activeContact])
-
-
-    // const messages = [{
-    //     text: "Yo man whass up!!",
-    //     senderID: "jjfkdsl",
-    //     timestamp: 43897424,
-    // }, {
-    //     text: "Yo man whass up!!",
-    //     senderID: "jjfkdsl",
-    //     timestamp: 43897424,
-    // }];
-
 
     return (
                 
@@ -83,14 +93,8 @@ const MessagingArea = ({ activeContact }) => {
                 {isLoading ? <CircularProgress className="messages-loading-sign" size={30}/> : displayMessages}
                 {!isLoading && !displayMessages && <p className="start-the-conversation">No messages.<br/>Start the Conversation!</p>}
             </div>
-            <div className="typing-area">
-                <form>
-                    <input className="typing-field" type="text" placeholder="Type your message here..." />
-                    <IconButton className="submit-button" aria-label="Toggle Dark Theme" color="inherit">
-                        <SendIcon />
-                    </IconButton>
-                </form>
-            </div>
+
+            <TypingArea activeContact={activeContact} convoID={convoID} messages={messages} />
         </div>
         
 
