@@ -21,6 +21,29 @@ const TypingArea = ({ activeContact, convoID, messages }) => {
             messages: [...messages, newMsg]
         })
 
+        projectFirestore.collection("contacts").doc(activeContact.userID).get()
+        .then((docRef)=>{
+            let otherPersonsContact = docRef.data().contacts;
+            var updatedUnreadContactList = [];
+            otherPersonsContact.forEach((contact)=>{
+                if(contact.userID == currentUser.uid){
+                    updatedUnreadContactList.push({
+                        latestTimestamp: Math.floor(Date.now() / 1000),
+                        unread: contact.unread + 1,
+                        userID: contact.userID
+                    })
+                }else{
+                    updatedUnreadContactList.push(contact);
+                }
+            })
+    
+            projectFirestore.collection("contacts").doc(activeContact.userID).set({
+                contacts: updatedUnreadContactList
+            })
+        });
+        
+
+
         setTypedText('');
     }
 

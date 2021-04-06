@@ -18,6 +18,10 @@ export default function SingleContact({ id, contactName, contactDetails, activeC
         return timestamp;
     }
 
+    useEffect(()=>{
+        console.log("contact details changed");
+    }, [contactDetails])
+
     return(
         <div className={activeContact && id==activeContact.userID ? "single-contact selected-contact" : "single-contact"} >
             <div className="div-contact-to-click" id={id} onClick={handleOnClick}></div>
@@ -31,7 +35,7 @@ export default function SingleContact({ id, contactName, contactDetails, activeC
                         {/* <p className="recent-msg-time">{()=>convertTimestamp(contactDetails.latestTimestamp)}</p> */}
                         {/* <p className="recent-msg-time">{contactDetails.latestTimestamp}</p> */}
                         <p className="recent-msg-time">3:56 pm</p>
-                        <p className="no-of-msgs">{contactDetails.unread}</p>
+                        <p className={contactDetails.unread ? "no-of-msgs" : "no-of-msgs hidden"}>{contactDetails.unread}</p>
                     </div>
                 </div>
         </div>

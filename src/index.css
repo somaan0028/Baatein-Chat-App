@@ -10,6 +10,8 @@
     --darkText: #222222;
 }
 
+
+
 .scroll-section::-webkit-scrollbar {
     width: 12px;               /* width of the entire scrollbar */
 }
@@ -299,7 +301,10 @@
     font-family: cursive;
     width: 25px;
     height: 25px;
-
+    
+}
+.chat-panel-body .contacts-area .contacts-list .single-contact .contact-info .hidden{
+    opacity: 0;
 }
 
 .chat-panel-body .contacts-area .contacts-list .selected-contact{
