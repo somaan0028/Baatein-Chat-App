@@ -7,23 +7,30 @@
 
 :root {
     --primary: #f50057;
-    --darkText: #222222;
+    --permanentPrimary: #f50057;
+    --textColor: #222222;
+    --secondary: white;
+    --third: white;
+    --boxShadow: #d0d0d0;
+    --darkToLight: #1f1f1f;
 }
 
-
+#root{
+    background: var(--secondary);
+}
 
 .scroll-section::-webkit-scrollbar {
     width: 12px;               /* width of the entire scrollbar */
 }
   
 .scroll-section::-webkit-scrollbar-track {
-    background: white;        /* color of the tracking area */
+    background: transparent;        /* color of the tracking area */
 }
   
 .scroll-section::-webkit-scrollbar-thumb {
     background-color: var(--primary);    /* color of the scroll thumb */
     border-radius: 20px;       /* roundness of the scroll thumb */
-    border: 3px solid white;  /* creates padding around scroll thumb */
+    border: 3px solid var(--secondary);  /* creates padding around scroll thumb */
 }
 
 .dashboard-loading-sign{
@@ -109,8 +116,8 @@
     height: 98%;
     max-width: 1000px;
     max-height: 600px;
-    box-shadow: 0 0 10px #222222;
-    background-color: white;
+    box-shadow: 0 0 10px 3px var(--boxShadow);
+    background-color: var(--secondary);
     font-size: 15px;
     font-family: 'Fredoka One', cursive;
     overflow: hidden;
@@ -160,11 +167,16 @@
     align-items: center;
 }
 .chat-panel .header-chat-panel .header-buttons .logout-button{
-    margin-left: 10px;
+    margin-left: 13px;
+    background-color: white;
+    color: black;
+    font-family: 'Fredoka One', cursive;
 }
 
 .chat-panel .header-chat-panel .header-buttons .logout-button .logout-icon{
     margin-right: 5px;    
+    background-color: white;
+    color: black
 }
 
 .chat-panel-body{
@@ -172,7 +184,7 @@
     height: fit-content;
     display: flex;
     justify-content: flex-start;
-    background-color: #f9fbfc;
+    background-color: var(--third);
 }
 
 .chat-panel-body .contacts-area{
@@ -191,9 +203,43 @@
 
 .chat-panel-body .contacts-area .chats-heading{
     font-size: 2.5em;
-    color: var(--darkText);
+    color: var(--textColor);
     text-align: center;
     padding: 14px 0;
+}
+.chat-search-container{
+    display: flex;
+    margin: 10px auto 20px auto;;
+    padding: 0;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 30px;
+    box-shadow: 0 0 16px 3px var(--boxShadow);
+}
+
+.chat-search-container .search-icon{
+    height: 37px;
+    width: 37px;
+    background-color: var(--primary); 
+    color: white;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    padding: 9px;
+}
+.chat-search-container .chat-search-bar{
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    height: 37px;
+    padding: 5px 5px 5px 13px;
+    width: 235px;
+    border: 0;
+    outline: none;
+    font-size: 1em;
+}
+
+.chat-search-container .chat-search-bar:hover,
+.chat-search-container .chat-search-bar:focus{
+    outline: none;
 }
 .chat-panel-body .contacts-area .contacts-list{
     display: flex;
@@ -230,14 +276,15 @@
     height: 80px;
     min-height: 76px;
     background-color: white;
-    color: var(--darkText);
+    color: var(--textColor);
     display: flex;
     justify-content: left;
     align-items: center;
     border-radius: 20px;
-    box-shadow: 0 0 5px 3px rgb(173 173 173 / 34%);
+    box-shadow: 0 0 5px 3px var(--boxShadow);
     /* cursor: pointer; */
     transition: 0.2s all;
+    background-color: var(--secondary);
 
 }
 
@@ -308,20 +355,18 @@
 }
 
 .chat-panel-body .contacts-area .contacts-list .selected-contact{
-    background-color: #222222;
+    background-color: var(--darkToLight);
 }
 .chat-panel-body .contacts-area .contacts-list .selected-contact:hover{
-    background-color: #222222;
-
+    background-color: var(--darkToLight);
 }
 
 .chat-panel-body .contacts-area .contacts-list .selected-contact .contact-info .contact-name{
-    color: white;
+    color: var(--secondary);
 }
 .chat-panel-body .contacts-area .contacts-list .selected-contact .contact-info .recent-msg,
 .chat-panel-body .contacts-area .contacts-list .selected-contact .contact-info .recent-msg-time{
-    color: rgb(206, 206, 206);
-
+    color: rgb(128 128 128);
 }
 
 .chat-panel-body .contacts-area .contacts-list .single-contact .div-contact-to-click{
@@ -364,13 +409,13 @@
 
 .chat-panel .header-msg-area{
     height: 60px;
-    background-color: white;
+    background-color: var(--secondary);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
     color: white;
-    box-shadow: 0 0 7px 1px #d0d0d0;
+    box-shadow: 0 0 7px 1px var(--boxShadow);
     width: 100%;
 }
 
@@ -400,7 +445,7 @@
 }
 .chat-panel .header-msg-area .user-details-container .user-info h2{
     font-size: 1.5em;
-    color: #222222;
+    color: var(--textColor);
 
 }
 .chat-panel .header-msg-area .user-details-container .user-info p{
@@ -415,13 +460,12 @@
 
 
 
-
 .chat-panel .messaging-area .chat-msg-area{
     flex-grow: 1;
     width: 100%;
-    background-color: white;
+    background-color: var(--secondary);
     margin: 10px 0;
-    box-shadow: 0 0 7px 1px #d0d0d0;
+    box-shadow: 0 0 7px 1px var(--boxShadow);
     overflow-y: scroll;
     position: relative;
 }
@@ -500,7 +544,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 7px 1px #d0d0d0;
+    box-shadow: 0 0 7px 1px var(--boxShadow);
 }
 
 .chat-panel .messaging-area .typing-area form{
@@ -510,9 +554,9 @@
     justify-content: center;
     align-items: center;
     padding: 10px 40px;
-    background-color: white;
+    background-color: var(--secondary);
     margin: 10px 0 10px 0;
-    box-shadow: 0 0 7px 1px #d0d0d0;
+    box-shadow: 0 0 7px 1px var(--boxShadow);
 
 }
 .chat-panel .messaging-area .typing-area form .typing-field{
@@ -544,6 +588,7 @@
     margin-left: 10px;
 }
 
-.chat-panel .messaging-area .typing-area form .submit-buttom .submit-icon{
-    background-color: var(--primary);
+.chat-panel .messaging-area .typing-area form .submit-button .submit-icon{
+    /* background-color: var(--primary); */
+    color: var(--permanentPrimary);
 }

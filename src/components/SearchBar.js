@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SearchIcon from '@material-ui/icons/Search';
-import "./searchBar.css";
+// import "./searchBar.css";
 
 export default function searchBar({ setContactsList, backUpContactsList }) {
 

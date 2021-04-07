@@ -4,17 +4,20 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import Brightness4OutlinedIcon from '@material-ui/icons/Brightness4Outlined';
-import Brightness4RoundedIcon from '@material-ui/icons/Brightness4Rounded';
+// import Brightness4OutlinedIcon from '@material-ui/icons/Brightness4Outlined';
+// import Brightness4RoundedIcon from '@material-ui/icons/Brightness4Rounded';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 import { useAuth } from "../contexts/AuthContext"
 import { useHistory } from "react-router-dom"
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
 
 const AppHeader = () => {
 
     const { currentUser, logout } = useAuth()
     const [error, setError] = useState("")
     const history = useHistory()
+    const [darkTheme, setDarkTheme] = useState(false);
 
     async function handleLogout() {
         setError("")
@@ -26,6 +29,31 @@ const AppHeader = () => {
           setError("Failed to log out")
         }
     }
+
+    const handleColorTheme = () => {
+    }
+
+    useEffect(()=>{
+        console.log("Dark Theme: " + darkTheme);
+        let root = document.querySelector(':root');
+        if(darkTheme){
+            // dark theme ON
+            // root.style.setProperty('--primary', '#1f1f1f');
+            root.style.setProperty('--secondary', '#1f1f1f');
+            root.style.setProperty('--third', '#131313');
+            root.style.setProperty('--textColor', 'white');
+            root.style.setProperty('--boxShadow', 'black');
+            root.style.setProperty('--darkToLight', 'white');
+        }else{
+            // dark theme OFF
+            root.style.setProperty('--primary', '#f50057');
+            root.style.setProperty('--secondary', 'white');
+            root.style.setProperty('--third', 'white');
+            root.style.setProperty('--textColor', '#222222');
+            root.style.setProperty('--boxShadow', '#d0d0d0');
+            root.style.setProperty('--darkToLight', '#1f1f1f');
+        }
+    }, [darkTheme])
 
     return (
         <div className="header-chat-panel">
@@ -40,8 +68,8 @@ const AppHeader = () => {
                 <IconButton aria-label="Add new friend" color="inherit">
                     <PersonAddIcon />
                 </IconButton>
-                <IconButton aria-label="Toggle Dark Theme" color="inherit">
-                    <Brightness4OutlinedIcon />
+                <IconButton onClick={()=>setDarkTheme(!darkTheme)} aria-label="Toggle Dark Theme" color="inherit">
+                    {darkTheme ? <Brightness7Icon /> : <Brightness4Icon /> }
                 </IconButton>
                 <IconButton aria-label="show 17 new notifications" color="inherit">
                     <Badge badgeContent={17} color="secondary">

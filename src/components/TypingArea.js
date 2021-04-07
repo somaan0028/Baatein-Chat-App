@@ -56,7 +56,7 @@ const TypingArea = ({ activeContact, convoID, messages }) => {
             <form onSubmit={handleSubmit}>
                 <input onChange={(e)=>setTypedText(e.target.value)} className="typing-field" type="text" value={typedText} placeholder="Type your message here..." />
                 <IconButton disabled={!typedText} type="submit" className="submit-button" aria-label="Toggle Dark Theme" color="inherit">
-                    <SendIcon />
+                    <SendIcon className="submit-icon" />
                 </IconButton>
             </form>
         </div>
