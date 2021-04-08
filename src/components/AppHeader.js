@@ -4,13 +4,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-// import Brightness4OutlinedIcon from '@material-ui/icons/Brightness4Outlined';
-// import Brightness4RoundedIcon from '@material-ui/icons/Brightness4Rounded';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 import { useAuth } from "../contexts/AuthContext"
 import { useHistory } from "react-router-dom"
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
+import AddNewContactModal from './AddNewContactModal';
 
 const AppHeader = () => {
 
@@ -18,6 +17,7 @@ const AppHeader = () => {
     const [error, setError] = useState("")
     const history = useHistory()
     const [darkTheme, setDarkTheme] = useState(false);
+    const [newContactModalOpen, setNewContactModalOpen] = useState(false);
 
     async function handleLogout() {
         setError("")
@@ -57,6 +57,7 @@ const AppHeader = () => {
 
     return (
         <div className="header-chat-panel">
+            {newContactModalOpen && <AddNewContactModal open={newContactModalOpen} setOpen={setNewContactModalOpen} />}
             <div className="user-details-container">
                 <img className="header-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
                 <div className="user-info">
@@ -65,7 +66,7 @@ const AppHeader = () => {
                 </div>
             </div>
             <div className="header-buttons">
-                <IconButton aria-label="Add new friend" color="inherit">
+                <IconButton onClick={()=>setNewContactModalOpen(!newContactModalOpen)} aria-label="Add new friend" color="inherit">
                     <PersonAddIcon />
                 </IconButton>
                 <IconButton onClick={()=>setDarkTheme(!darkTheme)} aria-label="Toggle Dark Theme" color="inherit">
