@@ -172,8 +172,8 @@ export default function AddNewContactModal({ open, setOpen }) {
       >
         <Fade in={open}>
           <div className={classes.paper + " modal-container"} >
-            <h2 id="transition-modal-title">Add New Friends!</h2>
-            <p id="transition-modal-description">Type their EXACT username to find them.</p>
+            <h2 id="transition-modal-title">Notifications</h2>
+            <p id="transition-modal-description">description</p>
            
             <div className="newContact-search-container">
                 <form onSubmit={handleSubmit} className="search-area">

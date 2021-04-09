@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom"
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import AddNewContactModal from './AddNewContactModal';
+import NotificationsModal from './NotificationsModal';
 
 const AppHeader = () => {
 
@@ -18,6 +19,7 @@ const AppHeader = () => {
     const history = useHistory()
     const [darkTheme, setDarkTheme] = useState(false);
     const [newContactModalOpen, setNewContactModalOpen] = useState(false);
+    const [notificationModalOpen, setNotificationModalOpen] = useState(false);
 
     async function handleLogout() {
         setError("")
@@ -58,6 +60,7 @@ const AppHeader = () => {
     return (
         <div className="header-chat-panel">
             {newContactModalOpen && <AddNewContactModal open={newContactModalOpen} setOpen={setNewContactModalOpen} />}
+            {notificationModalOpen && <NotificationsModal open={notificationModalOpen} setOpen={setNotificationModalOpen} />}
             <div className="user-details-container">
                 <img className="header-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
                 <div className="user-info">
@@ -72,7 +75,7 @@ const AppHeader = () => {
                 <IconButton onClick={()=>setDarkTheme(!darkTheme)} aria-label="Toggle Dark Theme" color="inherit">
                     {darkTheme ? <Brightness7Icon /> : <Brightness4Icon /> }
                 </IconButton>
-                <IconButton aria-label="show 17 new notifications" color="inherit">
+                <IconButton onClick={()=>setNotificationModalOpen(!notificationModalOpen)} aria-label="show 17 new notifications" color="inherit">
                     <Badge badgeContent={17} color="secondary">
                         <NotificationsIcon />
                     </Badge>

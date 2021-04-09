@@ -600,6 +600,18 @@
     position: absolute;
     text-align: center;
 }
+/* Overriding the default Modal styles so have to use !important */
+.modal-container{
+    background-color: var(--secondary) !important;
+    border: 2px solid var(--primary) !important;
+    padding-top: 25px !important;
+}
+#transition-modal-description,
+.pending-requests-container .pending-requests-list p,
+.newContact-search-container .search-results-container .single-search-result .pic-name p,
+.newContact-search-container .search-results-container #no-username{
+    color: var(--textColor);
+}
 
 .newContact-search-container{
     display: flex;
@@ -653,6 +665,14 @@
 
 .newContact-search-container .search-area{
     padding: 0px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.newContact-search-container .search-area #search-user-btn{
+    box-shadow: 0 0 10px var(--boxShadow);
+    padding: 8px;
+    margin-left: 7px;
 }
 .newContact-search-container .search-area .submit-icon{
     color: var(--primary);
@@ -666,6 +686,7 @@
     margin: 0 auto;
     text-align: center;
 }
+
 .newContact-search-container .search-results-container svg{
     color: var(--primary);
 }
@@ -706,4 +727,40 @@
     line-height: 13px;
     font-family: 'Fredoka One', cursive;
 
+}
+
+
+.pending-requests-container h3{
+    font-family: 'Fredoka One', cursive;
+    text-align: center;
+    margin-top: 20px;
+    margin: 35px 0 0 0;
+    color: var(--primary);
+}
+
+
+.pending-requests-container .pending-requests-list .small-msg{
+    text-align: center;
+    margin-bottom: 15px;
+
+}
+.pending-requests-container .pending-requests-list .single-req-pending{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 40px;
+    box-shadow: 0 0 2px var(--primary);
+    padding: 10px;
+    margin: 5px 2px;
+    border-radius: 35px;
+}
+.pending-requests-container .pending-requests-list img{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.pending-requests-container .pending-requests-list p{
+    font-family: 'Fredoka One', cursive;
 }
