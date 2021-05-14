@@ -17,11 +17,12 @@ export default function searchBar({ setContactsList, backUpContactsList }) {
             }
         });
 
+        if(enteredText == ""){filteredArray = backUpContactsList}
+
         if(filteredArray.length == 0){
             setContactsList(
                 <div className="no-contacts-match-search">
                     <p className="no-contacts-text">No Contacts match<br/>your search</p>
-                    <img className="sad-emoji" alt="Sad Emoji" src="https://toppng.com/uploads/preview/sad-face-transparent-png-crying-emoji-transparent-background-11562873850hiicomfwuq.png" />
                 </div>
             )
         }else{
@@ -33,7 +34,7 @@ export default function searchBar({ setContactsList, backUpContactsList }) {
     return(
         <div className="chat-search-container">
             <SearchIcon className="search-icon" />
-            <input onChange={handleChange} type="text" className="chat-search-bar" placeholder="Search your contacts..." />
+            <input onChange={handleChange} type="text" className="chat-search-bar" id="bar-for-searching-contacts" placeholder="Search your contacts..." />
         </div>
     )
 }      

@@ -13,7 +13,7 @@ export default function ChatPanel({ userProfile }) {
     return(
         <div className="chat-panel">
             
-            < AppHeader />
+            < AppHeader userProfile={userProfile} />
 
             <div className="chat-panel-body">
                 

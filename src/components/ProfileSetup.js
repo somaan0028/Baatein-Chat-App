@@ -48,6 +48,7 @@ export default function ProfileSetup({ setUserProfile }) {
   const [isLoading, setisLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date('2014-08-18T21:11:54'));
   const [profilePicUrl, setProfilePicUrl] = useState(null);
+  const [profileCreationError, setProfileCreationError] = useState("");
 
   const handleUsername = async (e) => {
     let entered_username = e.target.value;
@@ -98,28 +99,50 @@ export default function ProfileSetup({ setUserProfile }) {
     e.preventDefault();
     let profileToSave = {
       username: username,
-      userId: "dummyId",
+      userId: currentUser.uid,
       dateOfBirth: selectedDate,
       profilePicture: profilePicUrl,
-      contacts: []
+      unreadNotf: 0,
+      darkTheme: false
     };
-    // console.log(profileToSave);
-    setisLoading(true);
-    projectFirestore.collection("profiles").doc(currentUser.uid).set(profileToSave)
-    .then((docRef) => {
-      setisLoading(false);
-      console.log(docRef);
-      projectFirestore.collection("profiles").doc(docRef.id).get()
-     .then(snap => {
-        console.log('Here is the document you wrote to', snap.data());
-        // history.push("/");
-        setUserProfile(snap.data());
-     })
+
+
+    // check if profile with same id already exists
+    projectFirestore.collection("profiles").where("userId", "==", currentUser.uid).get()
+    .then(querySnapshot=>{
+      if(querySnapshot.docs.length !== 0){
+        console.log("Profile with this ID already exists")
+        setProfileCreationError("*Your Profile Already Exists.")
+      }else{
+        setProfileCreationError("")
+        console.log("Ready to create new profile")
+        setisLoading(true);
+        projectFirestore.collection("profiles").doc(currentUser.uid).set(profileToSave)
+        projectFirestore.collection("contacts").doc(currentUser.uid).set({
+          contacts: []
+        })
+        projectFirestore.collection("notifications").doc(currentUser.uid).set({
+          notifications: [],
+          pending: []
+        })
+        .then((docRef) => {
+          setisLoading(false);
+          console.log(docRef);
+          projectFirestore.collection("profiles").doc(docRef.id).get()
+         .then(snap => {
+            console.log('Here is the document you wrote to', snap.data());
+            // history.push("/");
+            setUserProfile(snap.data());
+         })
+        })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+            setisLoading(false);
+        });
+      }
     })
-    .catch((error) => {
-        console.error("Error adding document: ", error);
-        setisLoading(false);
-    });
+
+
   }
 
   return (
@@ -139,13 +162,7 @@ export default function ProfileSetup({ setUserProfile }) {
         <Typography component="h1" variant="h5" style={{margin: "0 0 5px 0"}}>
           Create Your Profile
         </Typography>
-        {/* <form className={classes.form} noValidate style={{
-            maxWidth: "600px", 
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center"
-            }}> */}
+          {profileCreationError && <h2 className="error-profile-creation">{profileCreationError}</h2>}
           <TextField
             margin="normal"
             required

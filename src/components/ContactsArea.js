@@ -12,6 +12,7 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
     const [contactsList, setContactsList] = useState([]);
     const [backUpContactsList, setbackUpContactsList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [noContacts, setNoContacts] = useState(false)
 
 
     useEffect(()=>{
@@ -24,6 +25,17 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
             // ordering w.r.t to latest message
             receivedContacts.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
             console.log("setting contactsFromDB");
+
+            if(receivedContacts.length == 0){
+                console.log("NO CONTACTS!")
+                setContactsList([]);
+                setbackUpContactsList([]);
+                setIsLoading(false);
+                setNoContacts(true);
+            }else{
+                setNoContacts(false)
+            }
+
             setContactsFromDB(receivedContacts);
 
         })
@@ -49,7 +61,16 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
     useEffect(()=>{
         console.log("contacts changed");
         let tempArray = [];
+        // if(contactsFromDB.length == 0 && contactsList.length !== 0){
+        //     console.log("NO CONTACTS!")
+        //     setContactsList([]);
+        //     setbackUpContactsList([]);
+        //     setIsLoading(false);
+        //     setNoContacts(true);
+        // }else{
+        // setNoContacts(false)
         contactsFromDB.forEach((contact)=>{
+            console.log(contact)
             projectFirestore.collection("profiles").doc(contact.userID).get()
             .then((docRef)=>{
 
@@ -66,10 +87,17 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                             userID: contact.userID,
                             latestTimestamp: contact.latestTimestamp,
                             unread: 0, 
+                            profilePicture: docRef.data().profilePicture
                         }
                         resetUnreadAmount(modifiedContact);
                     }else{
                         modifiedContact = contact;
+                        modifiedContact = {
+                            latestTimestamp: contact.latestTimestamp,
+                            unread: contact.unread,
+                            userID: contact.userID,
+                            profilePicture: docRef.data().profilePicture
+                        };
                     }
                     tempArray.push(<SingleContact 
                         key={contact.userID} 
@@ -87,6 +115,7 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                 }
             })
         })
+        // }
 
     }, [contactsFromDB]);
 
@@ -94,6 +123,9 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
     useEffect(()=>{
         if(!activeContact){return};
         console.log("activeContact changed!!!!!");
+
+        document.querySelector("#bar-for-searching-contacts").value = "";     // clearing search bar
+
 
         let updatedUnreadContactList = [];
         
@@ -115,7 +147,7 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
         })
 
         let newContactList = [];
-        contactsList.forEach((contactComponent)=>{
+        backUpContactsList.forEach((contactComponent)=>{
             newContactList.push(<SingleContact 
                 key={contactComponent.props.key} 
                 id={contactComponent.props.id} 
@@ -138,8 +170,15 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
             <SearchBar setContactsList={setContactsList} backUpContactsList={backUpContactsList} />
             <div className="contacts-list scroll-section">
 
-                {isLoading ? <CircularProgress className="contacts-loading-sign" size={30}/> : contactsList}                
-            
+                {isLoading && <CircularProgress className="contacts-loading-sign" size={30}/> }
+                {noContacts && <div className="no-contacts-match-search">
+                    <p className="no-contacts-text">Add new Contacts!</p>
+                </div>}
+                {!isLoading && !noContacts && contactsList}
+
+                {/* {isLoading ? <CircularProgress className="contacts-loading-sign" size={30}/> 
+                : contactsList} */}
+
             </div>
         </div>
     )

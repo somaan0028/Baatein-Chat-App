@@ -7,23 +7,37 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 import { useAuth } from "../contexts/AuthContext"
 import { useHistory } from "react-router-dom"
+import { projectFirestore} from '../firebase';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import AddNewContactModal from './AddNewContactModal';
 import NotificationsModal from './NotificationsModal';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 
-const AppHeader = () => {
+const AppHeader = ({ userProfile }) => {
 
     const { currentUser, logout } = useAuth()
     const [error, setError] = useState("")
     const history = useHistory()
-    const [darkTheme, setDarkTheme] = useState(false);
+    const [darkTheme, setDarkTheme] = useState(userProfile.darkTheme);
     const [newContactModalOpen, setNewContactModalOpen] = useState(false);
     const [notificationModalOpen, setNotificationModalOpen] = useState(false);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     async function handleLogout() {
         setError("")
-    
+        let root = document.querySelector(':root');
+        if(darkTheme){
+            // dark theme OFF
+            root.style.setProperty('--primary', '#f50057');
+            root.style.setProperty('--secondary', 'white');
+            root.style.setProperty('--third', 'white');
+            root.style.setProperty('--textColor', '#222222');
+            root.style.setProperty('--boxShadow', '#d0d0d0');
+            root.style.setProperty('--darkToLight', '#1f1f1f');
+        }
         try {
           await logout()
           history.push("/login")
@@ -32,7 +46,13 @@ const AppHeader = () => {
         }
     }
 
-    const handleColorTheme = () => {
+    const openNotificationsModal = () => {
+        setNotificationModalOpen(!notificationModalOpen);
+
+        // set unread notifications to 0
+        projectFirestore.collection("profiles").doc(currentUser.uid).update({
+            unreadNotf: 0
+        })
     }
 
     useEffect(()=>{
@@ -57,32 +77,98 @@ const AppHeader = () => {
         }
     }, [darkTheme])
 
+    useEffect(()=>{
+        window.addEventListener("resize", ()=>{
+            setScreenWidth(window.innerWidth)
+        })
+
+        document.getElementsByTagName("body")[0].addEventListener("keypress", (event) =>{
+            if (event.key == "Escape") {
+                handleFullscreen()
+                console.log("Escape pressed")
+            }
+        });
+    }, [])
+
+    const handleDarkTheme = () => {
+        if(darkTheme){
+            setDarkTheme(false)
+            projectFirestore.collection("profiles").doc(currentUser.uid).update({
+                darkTheme: false
+            })
+        }else{
+            setDarkTheme(true)
+            projectFirestore.collection("profiles").doc(currentUser.uid).update({
+                darkTheme: true
+            })
+        }
+    }
+
+    const handleFullscreen = ()=>{
+        let fullscreenElem = document.querySelector(".chat-panel")
+        if(!isFullscreen){
+            if (fullscreenElem.requestFullscreen) {
+                fullscreenElem.requestFullscreen();
+              } else if (fullscreenElem.webkitRequestFullscreen) { /* Safari */
+                fullscreenElem.webkitRequestFullscreen();
+              } else if (fullscreenElem.msRequestFullscreen) { /* IE11 */
+                fullscreenElem.msRequestFullscreen();
+              }
+            setIsFullscreen(true)
+        }else{
+            if(document.fullscreenElement){
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+            }else{
+                console.log("Not full screen")
+            }
+            setIsFullscreen(false)
+        }
+    }
+
+    // useEffect(()=>{
+    //     console.log("Document changed");
+    // }, [document])
+
     return (
         <div className="header-chat-panel">
-            {newContactModalOpen && <AddNewContactModal open={newContactModalOpen} setOpen={setNewContactModalOpen} />}
+            {newContactModalOpen && <AddNewContactModal open={newContactModalOpen} setOpen={setNewContactModalOpen} userProfile={userProfile} />}
             {notificationModalOpen && <NotificationsModal open={notificationModalOpen} setOpen={setNotificationModalOpen} />}
             <div className="user-details-container">
-                <img className="header-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
+                <img className="header-profile-pic" alt="Profile Picture" src={userProfile.profilePicture} />
                 <div className="user-info">
-                    <h2>John Doe</h2>
-                    <p>dummyemail@gmail.com</p>
+                    <h2>{userProfile.username}</h2>
+                    <p>{currentUser.email}</p>
                 </div>
+                {screenWidth <= 625  &&
+                <Button variant="contained" color="secondary" className="logout-button" onClick={handleLogout}>
+                    <ExitToAppRoundedIcon className="logout-icon" /> Logout
+                </Button>}
             </div>
             <div className="header-buttons">
                 <IconButton onClick={()=>setNewContactModalOpen(!newContactModalOpen)} aria-label="Add new friend" color="inherit">
                     <PersonAddIcon />
                 </IconButton>
-                <IconButton onClick={()=>setDarkTheme(!darkTheme)} aria-label="Toggle Dark Theme" color="inherit">
+                <IconButton onClick={handleDarkTheme} aria-label="Toggle Dark Theme" color="inherit">
                     {darkTheme ? <Brightness7Icon /> : <Brightness4Icon /> }
                 </IconButton>
-                <IconButton onClick={()=>setNotificationModalOpen(!notificationModalOpen)} aria-label="show 17 new notifications" color="inherit">
-                    <Badge badgeContent={17} color="secondary">
+                <IconButton onClick={openNotificationsModal} aria-label="show new notifications" color="inherit">
+                    <Badge badgeContent={userProfile.unreadNotf} color="secondary">
                         <NotificationsIcon />
                     </Badge>
                 </IconButton>
+                <IconButton onClick={handleFullscreen} aria-label="Toggle Full Screen" color="inherit">
+                    {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon /> }
+                </IconButton>
+                { screenWidth > 625 &&
                 <Button variant="contained" color="secondary" className="logout-button" onClick={handleLogout}>
                     <ExitToAppRoundedIcon className="logout-icon" /> Logout
-                </Button>
+                </Button> }
             </div>
         </div>
     )

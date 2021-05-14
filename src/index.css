@@ -64,6 +64,19 @@
     color: red;
 }
 
+.error-profile-creation{
+    background-color: rgb(255, 134, 134);
+    border: 2px solid red;
+    color: black;
+    font-size: 1em;
+    width: 100%;
+    border-radius: 7px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    margin: 10px 0 7px 0;
+}
 .upload-image-form{
     display: flex;
     justify-content: center;
@@ -141,11 +154,21 @@
     align-items: center;
 }
 
+.chat-panel .header-msg-area .back-btn{
+    display: none;
+}
+
+
+.chat-panel .header-msg-area .back-btn span .back-icon{
+    color: var(--primary);
+}
+
 .chat-panel .header-chat-panel .user-details-container img{
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    margin: 14px;
+    margin: 0px 15px 0 7px;
+    box-shadow: 0 0 10px rgb(34, 34, 34, 57%);
 }
 
 .chat-panel .header-chat-panel .user-details-container .user-info{
@@ -155,6 +178,7 @@
     flex-direction: column;
     justify-content: center;
     font-size: 0.85em; 
+    flex-grow: 1;
 }
 .chat-panel .header-chat-panel .user-details-container .user-info h2{
     font-size: 1.92em;
@@ -166,14 +190,14 @@
     justify-content: right;
     align-items: center;
 }
-.chat-panel .header-chat-panel .header-buttons .logout-button{
+.chat-panel .header-chat-panel .logout-button{
     margin-left: 13px;
     background-color: white;
     color: black;
     font-family: 'Fredoka One', cursive;
 }
 
-.chat-panel .header-chat-panel .header-buttons .logout-button .logout-icon{
+.chat-panel .header-chat-panel .logout-button .logout-icon{
     margin-right: 5px;    
     background-color: white;
     color: black
@@ -181,7 +205,8 @@
 
 .chat-panel-body{
     width: 100%;
-    height: fit-content;
+    /* height: fit-content; */
+    height: 100%;
     display: flex;
     justify-content: flex-start;
     background-color: var(--third);
@@ -211,7 +236,7 @@
     display: flex;
     margin: 10px auto 20px auto;;
     padding: 0;
-    width: fit-content;
+    width: 90%;
     height: fit-content;
     border-radius: 30px;
     box-shadow: 0 0 16px 3px var(--boxShadow);
@@ -231,7 +256,7 @@
     border-bottom-right-radius: 30px;
     height: 37px;
     padding: 5px 5px 5px 13px;
-    width: 235px;
+    width: 90%;
     border: 0;
     outline: none;
     font-size: 1em;
@@ -244,7 +269,8 @@
 .chat-panel-body .contacts-area .contacts-list{
     display: flex;
     flex-direction: column;
-    height: 390px;
+    /* height: 390px; */
+    height: 64%;
     overflow-y: scroll;
     padding-top: 9px;
 }
@@ -388,7 +414,8 @@
 
 .chat-panel .messaging-area{
     width: 100%;
-    height: 532px;
+    /* height: 532px; */
+    height: 88%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -594,12 +621,21 @@
 }
 
 
-/* Add new contact modal */
+.modal-container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 400px;
+    transform: translate(-50%, -50%);
+}
 
+/* Add new contact modal */
 .chat-panel .header-chat-panel .add-new-contact-modal{
     position: absolute;
     text-align: center;
 }
+
 /* Overriding the default Modal styles so have to use !important */
 .modal-container{
     background-color: var(--secondary) !important;
@@ -617,7 +653,7 @@
     display: flex;
     margin: 10px auto 20px auto;
     padding: 0;
-    width: fit-content;
+    /* width: fit-content; */
     height: fit-content;
     border-radius: 30px;
     /* box-shadow: 0 0 16px 3px var(--boxShadow); */
@@ -625,6 +661,23 @@
     justify-content: center;
     align-items: center;
     font-family: 'Fredoka One', cursive;
+}
+
+.notifications-list{
+    /* overflow-y: scroll; */
+    max-height: 225px;
+    min-width: 220px;
+}
+.pending-requests-container{
+    overflow-y: scroll;
+    max-height: 225px;
+}
+.pending-requests-container .small-msg{
+    text-align: center;
+    color: var(--textColor);
+}
+.notifications-container{
+    overflow: none;
 }
 #transition-modal-title{
     color: var(--primary);
@@ -668,6 +721,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 230px;
 }
 .newContact-search-container .search-area #search-user-btn{
     box-shadow: 0 0 10px var(--boxShadow);
@@ -680,7 +734,7 @@
 .newContact-search-container .search-results-container{
     width: 100%;
     padding: 20px 3px 0 3px;
-    min-height: 100px;
+    min-height: 80px;
 }
 .newContact-search-container .search-results-container{
     margin: 0 auto;
@@ -733,8 +787,7 @@
 .pending-requests-container h3{
     font-family: 'Fredoka One', cursive;
     text-align: center;
-    margin-top: 20px;
-    margin: 35px 0 0 0;
+    margin: 10px 0 0 0;
     color: var(--primary);
 }
 
@@ -763,4 +816,141 @@
 
 .pending-requests-container .pending-requests-list p{
     font-family: 'Fredoka One', cursive;
+}
+
+/* Notifications Modal */
+.pending-requests-container .notifications-list{
+    max-height: 340px;
+    padding-right: 10px;
+    padding-left: 15px;
+}
+.pending-requests-container .notifications-list .single-friend-req {
+    padding: 10px;
+    color: var(--textColor);
+}
+.pending-requests-container .single-friend-req{
+    display: flex;
+    background-color: transparent;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Fredoka One', cursive;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid var(--primary);
+    margin: 10px 0;
+}
+.pending-requests-container .req-accepted,
+.pending-requests-container .req-declined{
+    justify-content: flex-start;
+}
+
+.single-friend-req .user-info{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.single-friend-req .user-info p{
+    /* margin-right: 25px; */
+    /* max-width: 120px; */
+    text-align: left;
+
+}
+.single-friend-req img{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.single-friend-req .acc-dec-btns{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.single-friend-req .acc-dec-btns .buttons{
+    min-width: 70px;
+    width: 100%;
+    height: 30px;
+    font-size: 0.75em;
+    border: 0;
+    border-radius: 20px;
+    margin: 5px;
+    box-shadow: 0 0 10px var(--boxShadow);
+    
+}
+.single-friend-req .acc-dec-btns .accept-button{
+    background-color: #0cff0e;
+    color: white;
+    margin-right: 3px;
+}
+.single-friend-req .acc-dec-btns .decline-button{
+    background-color: red;
+    color: white;
+}
+
+@media only screen and (max-width: 625px) {
+    .chat-panel{
+        width: 100%;
+        height: 100%;
+        max-height: none;
+    }
+    .chat-panel .header-chat-panel{
+        flex-direction: column;
+        height: fit-content;
+        max-height: 17%;
+        font-size: 13px;
+        align-items: inherit;
+    }
+    .chat-panel .header-chat-panel .user-details-container{
+        height: 40px;
+        padding-top: 10px;
+    }
+    .chat-panel .header-chat-panel .user-details-container img{
+        width: 42px;
+        height: 42px;
+        margin: 2px 15px 0 3px;
+    }
+    .chat-panel .header-chat-panel .header-buttons{
+        justify-content: space-between;
+        padding-top: 10px;
+    }
+    .chat-panel-body{
+        position: relative;
+        height: 83%;
+    }
+    .chat-panel-body .contacts-area{
+        width: 100%;
+        z-index: 10;
+        position: absolute;
+        height: 100%;
+        background-color: var(--third);
+        transition: all 0.5s;
+        /* transform: translateX(-1000px); */
+    }
+    .messaging-area{
+        width: 100%;
+        z-index: 9;
+    }
+    .chat-panel .messaging-area{
+        height: 100%;
+    }
+    .chat-panel .header-msg-area .back-btn{
+        display: initial;
+    }
+    .newContact-search-container .chat-search-bar{
+        width: 100%;
+    }
+    .new_request{
+        flex-direction: column;
+    }
+
+    .new_request .acc-dec-btns{
+        margin: 15px 0 0 0;
+        width: 100%;
+        flex-direction: row;
+    }
+    .chat-panel .header-chat-panel .logout-button{
+        font-size: 0.7em;
+    }
 }

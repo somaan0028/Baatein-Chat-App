@@ -6,6 +6,9 @@ export default function SingleContact({ id, contactName, contactDetails, activeC
 
     const handleOnClick = (e) => {
         console.log(e.target);
+        if(window.innerWidth <= 625){
+            document.querySelector(".contacts-area").style.transform = "translate(-1000px)"
+        }
         let newActiveContact = {
             username: e.target.parentNode.querySelector(".contact-name").innerText,
             userID: e.target.id
@@ -25,7 +28,7 @@ export default function SingleContact({ id, contactName, contactDetails, activeC
     return(
         <div className={activeContact && id==activeContact.userID ? "single-contact selected-contact" : "single-contact"} >
             <div className="div-contact-to-click" id={id} onClick={handleOnClick}></div>
-                <img className="contact-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
+                <img className="contact-profile-pic" alt="Profile Picture" src={contactDetails.profilePicture} />
                 <div className="contact-info">
                     <div className="name-and-msg">
                         <p className="contact-name">{contactName}</p>

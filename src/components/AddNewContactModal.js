@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import { CircularProgress } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
-import { projectFirestore } from '../firebase';
+import { projectFirestore, increment } from '../firebase';
 import { useAuth } from "../contexts/AuthContext"
 
 const useStyles = makeStyles((theme) => ({
@@ -25,16 +25,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddNewContactModal({ open, setOpen }) {
-    const classes = useStyles();
+export default function AddNewContactModal({ open, setOpen, userProfile }) {
+  const classes = useStyles();
 
-    const { currentUser } = useAuth();
-    const [fieldText, setFieldText] = useState("");
-    const [isLoadingSearchResults, setIsLoadingSearchResults] = useState(false);
-    const [searchResults, setSearchResults] = useState(null);
-    const [pendingRequests, setPendingRequests ] = useState([]);
-    const [isPending, setisPending] = useState(false);
-    const [pendingContactsDisplay, setPendingContactsDisplay] = useState([]);
+  const { currentUser } = useAuth();
+  const [fieldText, setFieldText] = useState("");
+  const [isLoadingSearchResults, setIsLoadingSearchResults] = useState(false);
+  const [searchResults, setSearchResults] = useState(null);
+  const [pendingRequests, setPendingRequests ] = useState([]);
+  const [isPending, setisPending] = useState(false);
+  const [contactAlreadyExists, setContactAlreadyExists] = useState(false);
+  const [isOwnUsername, setIsOwnUsername] = useState(false);
+  const [pendingContactsDisplay, setPendingContactsDisplay] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -48,33 +50,37 @@ export default function AddNewContactModal({ open, setOpen }) {
       console.log(pendingArray);
       setPendingRequests(pendingArray);
       let pendingToDisplay = [];
-      pendingArray.forEach(pendingID => {
-        projectFirestore.collection("profiles").where("userId", "==", pendingID).get()
-        .then(querySnapshot=>{
-          let retrievedDocs = querySnapshot.docs;
-          let docDetails =  retrievedDocs[0].data();
-          console.log(docDetails);
-          pendingToDisplay.push(
-            <div className="single-req-pending">
-              <img className="contact-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
-              <p>{docDetails.username}</p>
-            </div>
-          )
-          // console.log(pendingToDisplay.length, )
-          if(pendingToDisplay.length >= pendingArray.length){
-            console.log("reached here");
-            setPendingContactsDisplay(pendingToDisplay);
-          }
-        })
-        .catch(err=>{
-          console.log(err);
-        })
-      });
+      if(pendingArray){
+
+        pendingArray.forEach(pendingID => {
+          projectFirestore.collection("profiles").where("userId", "==", pendingID).get()
+          .then(querySnapshot=>{
+            let retrievedDocs = querySnapshot.docs;
+            let docDetails =  retrievedDocs[0].data();
+            console.log(docDetails);
+            pendingToDisplay.push(
+              <div className="single-req-pending">
+                <img className="contact-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
+                <p>{docDetails.username}</p>
+              </div>
+            )
+            // console.log(pendingToDisplay.length, )
+            if(pendingToDisplay.length >= pendingArray.length){
+              console.log("reached here");
+              setPendingContactsDisplay(pendingToDisplay);
+            }
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+        });
+      }
     });
 
   }, [])
 
 
+  // query db and show the person with the entered username if exists
   const handleSubmit = (e)=>{
 
     e.preventDefault();
@@ -96,15 +102,39 @@ export default function AddNewContactModal({ open, setOpen }) {
         let docs = querySnapshot.docs;
         console.log(docs.length);
         if(docs.length == 0){
+            setIsOwnUsername(false)
             setSearchResults(false);
         }else{
             let userData = docs[0].data();
-            if(pendingRequests.includes(userData.userId)){
-              setisPending(true);
-            }else{
+
+            if(userProfile.username == userData.username){
+              console.log("This your own username!");
+              setIsOwnUsername(true)
+              setContactAlreadyExists(false)
               setisPending(false);
+              setSearchResults(null)
+            }else{
+              setIsOwnUsername(false)
+
+              // checking if user already in contacts
+              projectFirestore.collection("contacts").doc(currentUser.uid).get()
+              .then((docRef)=>{
+                let own_contacts = docRef.data().contacts
+                setContactAlreadyExists(false)
+                own_contacts.forEach(contact =>{
+                  if(contact.userID == userData.userId){
+                    setContactAlreadyExists(true)
+                  }
+                })
+              })
+  
+              if(pendingRequests.includes(userData.userId)){
+                setisPending(true);
+              }else{
+                setisPending(false);
+              }
+              setSearchResults(docs[0].data())
             }
-            setSearchResults(docs[0].data())
         }
         console.log(querySnapshot.docs[0].data());
         setIsLoadingSearchResults(false);
@@ -115,14 +145,18 @@ export default function AddNewContactModal({ open, setOpen }) {
     })
   }
 
-
+  // does 3 things: 
+  // 1. adds a new notification for the one to whom the request is sent to
+  // 2. increaments unreadNotf of the person who received the request
+  // 3. add a contact id (of the one to whom request is sent to) to the pending list of the sender
   const handleRequest = ()=>{
     console.log("Send request to " + searchResults.username + " : " + searchResults.userId);
     setisPending(true);
+
     // add a new notification for the one to whom request is sent
     projectFirestore.collection("notifications").doc(searchResults.userId).get()
     .then((docRef)=>{
-      // var receivedData = docRef.data();
+
       var oldNotifications = docRef.data().notifications;
       console.log(oldNotifications);
       let newRequest = {
@@ -131,20 +165,27 @@ export default function AddNewContactModal({ open, setOpen }) {
       }
       projectFirestore.collection("notifications").doc(searchResults.userId).set({
         notifications: [...oldNotifications, newRequest],
+        pending: docRef.data().pending
       })
     })
     .catch(err=>{
       console.log(err);
     })
 
+    // increaments unreadNotf (no of unread notifications) of the person who received the request
+    projectFirestore.collection("profiles").doc(searchResults.userId).update({
+      unreadNotf: increment
+    })
+
     // add the id of the person, to whom request is sent, to "pending" of current user
     projectFirestore.collection("notifications").doc(currentUser.uid).get()
     .then((docRef)=>{
-      // let receivedData = docRef.data();
+
       var oldPending = docRef.data().pending;
       console.log(oldPending);
 
       projectFirestore.collection("notifications").doc(currentUser.uid).set({
+        notifications: docRef.data().notifications,
         pending: [...oldPending, searchResults.userId],
       })
     })
@@ -169,6 +210,7 @@ export default function AddNewContactModal({ open, setOpen }) {
         BackdropProps={{
           timeout: 500,
         }}
+        className="add_new_contact_popup"
       >
         <Fade in={open}>
           <div className={classes.paper + " modal-container"} >
@@ -192,21 +234,30 @@ export default function AddNewContactModal({ open, setOpen }) {
                 <div className="search-results-container">
                     <div className="single-search-result">
                         <div className="pic-name">
-                            <img className="contact-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
+                            <img className="contact-profile-pic" alt="Profile Picture" src={searchResults.profilePicture} />
                             <p>{searchResults.username}</p>
                         </div>
-                        <Button disabled={isPending} className="send-request-btn" variant="contained" color="secondary" onClick={handleRequest}>{isPending ? "Request Pending" : "Send Request"}</Button>
+                        {contactAlreadyExists ? 
+                          <Button disabled={true} className="send-request-btn" variant="contained" color="secondary" onClick={handleRequest}>Already Added</Button>
+                        :
+                          <Button disabled={isPending} className="send-request-btn" variant="contained" color="secondary" onClick={handleRequest}>{isPending ? "Request Pending" : "Send Request"}</Button>
+                        }
+
                     </div>
                 </div>
                 }
                 {fieldText && !isLoadingSearchResults && !searchResults &&
                 <div className="search-results-container">
+                  {isOwnUsername ? 
+                    <p id="no-username">This is your own Username!!!</p>
+                    :
                     <p id="no-username">Nobody has this username!</p>
+                  }
                 </div>
                 }
             </div>
 
-            <div className="pending-requests-container">
+            <div className="pending-requests-container scroll-section">
                 <h3>Pending Requests</h3>
                 <div className="pending-requests-list">
                   {pendingContactsDisplay.length !== 0 ? 

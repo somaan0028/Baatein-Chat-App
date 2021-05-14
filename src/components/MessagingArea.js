@@ -4,6 +4,8 @@ import { useAuth } from "../contexts/AuthContext"
 import { projectFirestore } from '../firebase';
 import { CircularProgress } from '@material-ui/core';
 import TypingArea from './TypingArea';
+import { IconButton } from '@material-ui/core';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const MessagingArea = ({ activeContact }) => {
     // console.log("The active contact ID is: ");
@@ -72,6 +74,11 @@ const MessagingArea = ({ activeContact }) => {
 
     }, [activeContact])
 
+    const slideInContacts = ()=>{
+        console.log("Sliding in contacts")
+        document.querySelector(".contacts-area").style.transform = "translate(0)"
+    }
+
     return (
                 
         !activeContact ? 
@@ -82,6 +89,9 @@ const MessagingArea = ({ activeContact }) => {
         <div className="messaging-area">
             <div className="header-msg-area">
                 <div className="user-details-container">
+                    <IconButton onClick={slideInContacts} className="back-btn" aria-label="Back to contacts">
+                        <ArrowBackIcon className="back-icon" />
+                    </IconButton>
                     <img className="header-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
                     <div className="user-info">
                         <h2>{activeContact.username}</h2>
