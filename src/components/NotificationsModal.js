@@ -30,7 +30,6 @@ export default function AddNewContactModal({ open, setOpen }) {
 
     const { currentUser } = useAuth();
     const [fieldText, setFieldText] = useState("");
-    const [isLoadingSearchResults, setIsLoadingSearchResults] = useState(false);
     const [searchResults, setSearchResults] = useState(null);
     const [notificationsRequests, setNotificationsRequests ] = useState([]);
     const [isPending, setisPending] = useState(false);

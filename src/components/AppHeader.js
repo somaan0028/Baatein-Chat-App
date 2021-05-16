@@ -81,12 +81,45 @@ const AppHeader = ({ userProfile }) => {
         window.addEventListener("resize", ()=>{
             setScreenWidth(window.innerWidth)
         })
-
-        document.getElementsByTagName("body")[0].addEventListener("keypress", (event) =>{
+        let bodyElement = document.getElementsByTagName("body")[0];
+        bodyElement.addEventListener("keypress", (event) =>{
             if (event.key == "Escape") {
                 handleFullscreen()
                 console.log("Escape pressed")
             }
+        });
+
+        // bodyElement.addEventListener("fullscreenchange", (event)=>{
+        //     let chat_panel = document.querySelector(".chat-panel");
+        //     console.log("Full Screen Changed");
+        //     console.log("Is fullscreen: " + isFullscreen);
+        //     if(document.fullscreen){
+        //         chat_panel.classList.add("make-fullscreen");
+        //         setIsFullscreen(true)
+        //     }else{
+        //         chat_panel.classList.remove("make-fullscreen");
+        //         setIsFullscreen(false)
+        //     }
+        // })
+
+        // so that fullscreen event listener can be used in all browsers
+        const prefixes = ["", "moz", "webkit", "ms"]
+        let chat_panel = document.querySelector(".chat-panel");
+        
+        prefixes.forEach(function(prefix) {
+            bodyElement.addEventListener(prefix + "fullscreenchange", function() {
+            let isItFullscreen = document.fullscreenElement || /* Standard syntax */
+            document.webkitFullscreenElement || /* Chrome, Safari and Opera syntax */
+            document.mozFullScreenElement ||/* Firefox syntax */
+            document.msFullscreenElement /* IE/Edge syntax */;
+            if (isItFullscreen) {
+                chat_panel.classList.add("make-fullscreen");
+                setIsFullscreen(true)
+            } else if (!document.fullscreenchange) {
+                chat_panel.classList.remove("make-fullscreen");
+                setIsFullscreen(false)
+            }
+        });
         });
     }, [])
 
@@ -105,8 +138,10 @@ const AppHeader = ({ userProfile }) => {
     }
 
     const handleFullscreen = ()=>{
-        let fullscreenElem = document.querySelector(".chat-panel")
+        // let chat_panel = document.querySelector(".chat-panel")
+        let fullscreenElem = document.getElementsByTagName("body")[0];
         if(!isFullscreen){
+            // chat_panel.classList.add("make-fullscreen");
             if (fullscreenElem.requestFullscreen) {
                 fullscreenElem.requestFullscreen();
               } else if (fullscreenElem.webkitRequestFullscreen) { /* Safari */
@@ -117,6 +152,7 @@ const AppHeader = ({ userProfile }) => {
             setIsFullscreen(true)
         }else{
             if(document.fullscreenElement){
+                // chat_panel.classList.remove("make-fullscreen");
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.webkitExitFullscreen) { /* Safari */
@@ -138,7 +174,7 @@ const AppHeader = ({ userProfile }) => {
     return (
         <div className="header-chat-panel">
             {newContactModalOpen && <AddNewContactModal open={newContactModalOpen} setOpen={setNewContactModalOpen} userProfile={userProfile} />}
-            {notificationModalOpen && <NotificationsModal open={notificationModalOpen} setOpen={setNotificationModalOpen} />}
+            {notificationModalOpen && <NotificationsModal fullscreen={true} open={notificationModalOpen} setOpen={setNotificationModalOpen} />}
             <div className="user-details-container">
                 <img className="header-profile-pic" alt="Profile Picture" src={userProfile.profilePicture} />
                 <div className="user-info">

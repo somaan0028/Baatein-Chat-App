@@ -135,7 +135,12 @@
     font-family: 'Fredoka One', cursive;
     overflow: hidden;
 }
-
+.make-fullscreen{
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+}
 .chat-panel .header-chat-panel{
     height: 70px;
     background-color: var(--primary);
