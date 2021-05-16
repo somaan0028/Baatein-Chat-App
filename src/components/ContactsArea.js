@@ -57,18 +57,22 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
         });
     }
 
+    const convert24HourTo12Hour = (hrEle, minEle)=>{
+        if(hrEle>=0 && hrEle<=24 && minEle >=0 && minEle <= 60){
+            let AMorPM='AM';
+            if(hrEle>12)AMorPM='PM';
+            hrEle = (hrEle % 12);
+            if(minEle < 10){minEle = "0" + minEle}
+            return hrEle+':'+minEle+' '+AMorPM;
+        }
+    }
+
+
+
     // runs when the state contactsFromDB changes
     useEffect(()=>{
         console.log("contacts changed");
         let tempArray = [];
-        // if(contactsFromDB.length == 0 && contactsList.length !== 0){
-        //     console.log("NO CONTACTS!")
-        //     setContactsList([]);
-        //     setbackUpContactsList([]);
-        //     setIsLoading(false);
-        //     setNoContacts(true);
-        // }else{
-        // setNoContacts(false)
         contactsFromDB.forEach((contact)=>{
             console.log(contact)
             projectFirestore.collection("profiles").doc(contact.userID).get()
@@ -80,14 +84,18 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                 }else{
 
                     var modifiedContact = null;
+                    let profilePicture = docRef.data().profilePicture
                     // if unread messages are not equal to zero, then we replace it with zero temporarily and send it into
                     // the SingleContact components. Then we also call the function resetUnreadAmount() to replace it in the db as well. 
+                    let date = new Date(contact.latestTimestamp.seconds*1000);
+                    let latestTime = convert24HourTo12Hour(date.getHours(), date.getMinutes());
+
                     if(activeContact && contact.userID == activeContact.userID && contact.unread != 0){
                         modifiedContact = {
                             userID: contact.userID,
                             latestTimestamp: contact.latestTimestamp,
                             unread: 0, 
-                            profilePicture: docRef.data().profilePicture
+                            latestMsg: contact.latestMsg,
                         }
                         resetUnreadAmount(modifiedContact);
                     }else{
@@ -96,16 +104,25 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                             latestTimestamp: contact.latestTimestamp,
                             unread: contact.unread,
                             userID: contact.userID,
-                            profilePicture: docRef.data().profilePicture
+                            latestMsg: contact.latestMsg,
                         };
                     }
+
+                    let timeToDisplay = latestTime;
+                    let latestMsgDate = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+                    let todaysDate = new Date();
+                    todaysDate = todaysDate.getDate()+"/"+todaysDate.getMonth()+"/"+todaysDate.getFullYear()
+                    if(latestMsgDate !== todaysDate){timeToDisplay = latestMsgDate}
+                    if(contact.latestTimestamp == 0){timeToDisplay = null}
                     tempArray.push(<SingleContact 
                         key={contact.userID} 
                         id={contact.userID} 
                         contactName={docRef.data().username}
                         contactDetails={modifiedContact} 
                         activeContact={activeContact} 
-                        setActiveContact={setActiveContact} 
+                        setActiveContact={setActiveContact}
+                        profilePicture={profilePicture}
+                        timeToDisplay={timeToDisplay}
                     />);
                 }
                 if(tempArray.length == contactsFromDB.length){
@@ -134,7 +151,8 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                 updatedUnreadContactList.push({
                     latestTimestamp: contact.latestTimestamp,
                     unread: 0,
-                    userID: contact.userID
+                    userID: contact.userID,
+                    latestMsg: contact.latestMsg
                 })
             }else{
                 updatedUnreadContactList.push(contact);
@@ -155,6 +173,8 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                 contactDetails={contactComponent.props.contactDetails} 
                 activeContact={activeContact} 
                 setActiveContact={setActiveContact} 
+                profilePicture={contactComponent.props.profilePicture}
+                timeToDisplay={contactComponent.props.timeToDisplay}
             />);
             // console.log(contactComponent);
         })

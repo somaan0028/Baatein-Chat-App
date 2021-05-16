@@ -12,13 +12,42 @@ const TypingArea = ({ activeContact, convoID, messages }) => {
         e.preventDefault();
         if(!typedText){return};
         console.log(typedText);
+        let msgTimestamp = timestamp.now();
         let newMsg = {
             text: typedText,
             senderID: currentUser.uid,
-            timestamp: 17171668
+            timestamp: msgTimestamp
         }
+        console.log("Time now:")
+        console.log(timestamp.now().toDate())
         projectFirestore.collection("conversations").doc(convoID).set({
             messages: [...messages, newMsg]
+        })
+        let latestMsgToStore = typedText;
+        if(latestMsgToStore.length >=22){
+            latestMsgToStore = latestMsgToStore.substr(0, 20) + "..."
+        }
+        projectFirestore.collection("contacts").doc(currentUser.uid).get()
+        .then((docRef)=>{
+            let ownContacts = docRef.data().contacts
+            var updatedOwnContactList = []
+            ownContacts.forEach((contact)=>{
+                if(contact.userID == activeContact.userID){
+                    updatedOwnContactList.push({
+                        latestTimestamp: msgTimestamp,
+                        unread: contact.unread,
+                        userID: contact.userID,
+                        latestMsg: latestMsgToStore
+                    })
+                }else{
+                    updatedOwnContactList.push(contact);
+                }
+            })
+
+                
+            projectFirestore.collection("contacts").doc(currentUser.uid).set({
+                contacts: updatedOwnContactList
+            })
         })
 
         projectFirestore.collection("contacts").doc(activeContact.userID).get()
@@ -28,9 +57,10 @@ const TypingArea = ({ activeContact, convoID, messages }) => {
             otherPersonsContact.forEach((contact)=>{
                 if(contact.userID == currentUser.uid){
                     updatedUnreadContactList.push({
-                        latestTimestamp: Math.floor(Date.now() / 1000),
+                        latestTimestamp: msgTimestamp,
                         unread: contact.unread + 1,
-                        userID: contact.userID
+                        userID: contact.userID,
+                        latestMsg: latestMsgToStore
                     })
                 }else{
                     updatedUnreadContactList.push(contact);

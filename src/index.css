@@ -525,6 +525,24 @@
     align-items: center;
 
 }
+
+.chat-panel .messaging-area .chat-msg-area .msg-date-container{
+    padding: 0;
+    border-top: 2px solid #696565;
+    margin: 60px auto 0 auto;
+    width: 75%;
+}
+.chat-panel .messaging-area .chat-msg-area .msg-date{
+    background-color: yellow;
+    color: #1f1f1f;
+    margin: 20px auto;
+    padding: 10px;
+    border-radius: 20px;
+    width: fit-content;
+    margin: -23px auto 20px auto;
+    border: 2px solid #696565;
+}
+
 .chat-panel .messaging-area .chat-msg-area .single-msg{
     height: 100%;
     width: fit-content;

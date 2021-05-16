@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export default function SingleContact({ id, contactName, contactDetails, activeContact, setActiveContact }) {
+export default function SingleContact({ id, contactName, contactDetails, activeContact, setActiveContact, profilePicture, timeToDisplay }) {
 
     // console.log(activeContact);
 
@@ -11,7 +11,8 @@ export default function SingleContact({ id, contactName, contactDetails, activeC
         }
         let newActiveContact = {
             username: e.target.parentNode.querySelector(".contact-name").innerText,
-            userID: e.target.id
+            userID: e.target.id,
+            profilePicture: e.target.parentNode.querySelector(".contact-profile-pic").src
         }
         console.log();
         setActiveContact(newActiveContact);
@@ -28,16 +29,15 @@ export default function SingleContact({ id, contactName, contactDetails, activeC
     return(
         <div className={activeContact && id==activeContact.userID ? "single-contact selected-contact" : "single-contact"} >
             <div className="div-contact-to-click" id={id} onClick={handleOnClick}></div>
-                <img className="contact-profile-pic" alt="Profile Picture" src={contactDetails.profilePicture} />
+                <img className="contact-profile-pic" alt="Profile Picture" src={profilePicture} />
                 <div className="contact-info">
                     <div className="name-and-msg">
                         <p className="contact-name">{contactName}</p>
-                        <p className="recent-msg">lorem delorum kkdf gdf...</p>
+                        <p className="recent-msg">{contactDetails.latestMsg}</p>
                     </div>
                     <div className="time-and-notification">
                         {/* <p className="recent-msg-time">{()=>convertTimestamp(contactDetails.latestTimestamp)}</p> */}
-                        {/* <p className="recent-msg-time">{contactDetails.latestTimestamp}</p> */}
-                        <p className="recent-msg-time">3:56 pm</p>
+                        <p className="recent-msg-time">{timeToDisplay}</p>
                         <p className={contactDetails.unread ? "no-of-msgs" : "no-of-msgs hidden"}>{contactDetails.unread}</p>
                     </div>
                 </div>

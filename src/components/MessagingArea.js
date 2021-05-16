@@ -26,6 +26,21 @@ const MessagingArea = ({ activeContact }) => {
         }
     }
 
+    const convert24HourTo12Hour = (hrEle, minEle)=>{
+        if(hrEle>=0 && hrEle<=24 && minEle >=0 && minEle <= 60){
+            let AMorPM='AM';
+            if(hrEle>12)AMorPM='PM';
+            hrEle = (hrEle % 12);
+            if(minEle < 10){minEle = "0" + minEle}
+            return hrEle+':'+minEle+' '+AMorPM;
+        }
+    }
+
+    const getFullDate = (theDate, theMonth, theYear)=>{
+        let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        return theDate + "-" + monthNames[theMonth] + "-" + theYear;
+    }
+
     useEffect(()=>{
         if(!activeContact){return};
 
@@ -44,6 +59,8 @@ const MessagingArea = ({ activeContact }) => {
         console.log(conversationID);
         setConvoID(conversationID);
 
+        let previousMsgDate = null;
+
         var unsubscribe = projectFirestore.collection("conversations").doc(conversationID).onSnapshot((docRef)=>{
             if(docRef.data()){
                 setIsListenerSet(true);
@@ -52,8 +69,20 @@ const MessagingArea = ({ activeContact }) => {
                 var newMessagesArray = [];
                 console.log(conversationID);
                 received_messages.forEach((message)=>{
+
+                    let date = new Date(message.timestamp.seconds*1000);
+                    let msgTime = convert24HourTo12Hour(date.getHours(), date.getMinutes());
+                    let currentMsgDate = getFullDate(date.getDate(), date.getMonth(), date.getFullYear());
+                    if(currentMsgDate !== previousMsgDate){
+                        newMessagesArray.push(
+                            <div className="msg-date-container">
+                                <p className="msg-date">{currentMsgDate}</p>
+                            </div>
+                        )
+                        previousMsgDate = currentMsgDate;
+                    }
                     newMessagesArray.push(
-                        <SingleMessage message={message} />
+                        <SingleMessage message={message} msgTime={msgTime}/>
                     );
                 })
                 setMessages(received_messages);
@@ -92,10 +121,10 @@ const MessagingArea = ({ activeContact }) => {
                     <IconButton onClick={slideInContacts} className="back-btn" aria-label="Back to contacts">
                         <ArrowBackIcon className="back-icon" />
                     </IconButton>
-                    <img className="header-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
+                    <img className="header-profile-pic" alt="Profile Picture" src={activeContact.profilePicture} />
                     <div className="user-info">
                         <h2>{activeContact.username}</h2>
-                        <p>Last seen 4:54 pm</p>
+                        {/* <p>Last seen 4:54 pm</p> */}
                     </div>
                 </div>
             </div>

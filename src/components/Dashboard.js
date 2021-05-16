@@ -19,16 +19,6 @@ export default function Dashboard() {
 
 
   useEffect(()=>{
-    // projectDatabase.ref(".info/connected").on("value", function(snap) {
-    //   if (snap.val() === true) {
-    //     console.log("CONNECTED")
-    //     // setIsConnected(true);
-    //   } else {
-    //     console.log("DISCONNECTED");
-    //     // setIsConnected(false);
-    //   }
-    // })
-
     console.log(currentUser.uid);
     console.log("Going to check for current user profile")
     projectFirestore.collection("profiles").doc(currentUser.uid).onSnapshot((docRef)=>{
@@ -47,6 +37,29 @@ export default function Dashboard() {
       console.log("AN ERROR OCCURED WHILE FETCHING USER PROFILE");
       setError(true)
     })
+
+    // projectDatabase.ref("/status/").onDisconnect().set("Just Disconnected").then(()=>{
+    //   projectFirestore.collection("profiles").doc(currentUser.uid).update({
+    //     status: "I disconnected"
+    //   })
+    // })
+
+    // firebase.database().ref('.info/connected').on('value', function(snapshot) {
+    //   if (snapshot.val() == false) {
+    //       // Instead of simply returning, we'll also set Firestore's state
+    //       // to 'offline'. This ensures that our Firestore cache is aware
+    //       // of the switch to 'offline.'
+    //       userStatusFirestoreRef.set(isOfflineForFirestore);
+    //       return;
+    //   };
+  
+    //   userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function() {
+    //       userStatusDatabaseRef.set(isOnlineForDatabase);
+  
+    //       // We'll also add Firestore set here for when we come online.
+    //       userStatusFirestoreRef.set(isOnlineForFirestore);
+    //   });
+  // });
   }, [])
 
   return (
