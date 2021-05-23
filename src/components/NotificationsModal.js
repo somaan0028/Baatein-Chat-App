@@ -133,10 +133,12 @@ export default function AddNewContactModal({ open, setOpen }) {
     .then(docRef=>{
       let theContacts = [];
       let newContactToAdd = {
-        latestTimestamp: 111111111,
+        latestTimestamp: 0,
         unread: 0,
-        userID: currentUser.uid
+        userID: currentUser.uid,
+        latestMsg: ""
       };
+
 
       if(!docRef.data().contacts){
         theContacts.push(newContactToAdd);

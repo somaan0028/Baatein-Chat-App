@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap');
 *, h1, h2, h2, h4, h5, h6, p{
     margin: 0;
     padding: 0;
@@ -30,7 +30,7 @@
 .scroll-section::-webkit-scrollbar-thumb {
     background-color: var(--primary);    /* color of the scroll thumb */
     border-radius: 20px;       /* roundness of the scroll thumb */
-    border: 3px solid var(--secondary);  /* creates padding around scroll thumb */
+    border: 3px solid var(--third);  /* creates padding around scroll thumb */
 }
 
 .dashboard-loading-sign{
@@ -43,12 +43,185 @@
 }
 
 
+/* Home Page */
+header{
+    max-width: 1150px;
+    margin: 0 auto;
+}
+.home-page-div{
+    width: 100%;
+    /* max-width: 1150px; */
+    min-height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
 
+.logo{
+    width: 110px;
+    margin-left: 20px;
+}
+
+.main-home-body{
+    /* position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-family: 'Fredoka One', cursive;
+    padding: 10px;
+    height: 100vh; */
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1150px;
+    font-family: 'Fredoka One', cursive;
+    padding: 10px;
+    min-height: 70vh;
+    height: fit-content;
+    padding: 0 20px;
+    margin: 0 auto;
+}
+
+.home-text{
+    max-width: 450px;
+    width: 50%;
+}
+.home-text .home-heading{
+    font-size: 8.5em;
+}
+.home-text p{
+    font-size: 2em;
+    font-family: 'Raleway', sans-serif;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.home-page-image{
+    width: 50%;
+    max-width: 500px;
+    height: auto;
+    margin: 30px 30px 30px 30px;
+}
+
+.home-auth-buttons{
+    display: flex;
+}
+
+.home-auth-buttons button{
+    width: 100%;
+    margin-right: 10px;
+    max-width: 175px;
+    height: 45px;
+    padding: 0;
+}
+.home-auth-buttons button span{
+    width: 100%;
+    height: 100%;
+}
+.home-auth-buttons button a{
+    text-decoration: none;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-width: 100px;
+}
+
+
+.parallax-div{
+    width: 100%;
+    height: 300px;
+    background-color: rgb(255, 27, 65);
+    margin-top: 70px;
+    transform: skewY(348deg);
+}
+
+/* Login-Signup Pages */
+
+.auth-container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-family: 'Fredoka One', cursive;
+    padding: 10px;
+}
+.auth-area{
+    max-width: 300px;
+    width: 50%;
+}
+.auth-image{
+    width: 50%;
+    max-width: 500px;
+    height: auto;
+    margin: 30px 30px 30px 30px;
+}
+.auth-heading{
+    margin-bottom: 22px;
+    font-size: 3em;
+}
+.auth-input-field{
+    border: 1px solid var(--primary);
+    transition: all 0.3s;
+}
+.auth-input-field:focus,
+.auth-input-field:hover{
+    box-shadow: 0 0 15px #696969;
+    outline: none;
+    border: 1px solid var(--primary);
+
+}
+.auth-links{
+    color: var(--primary);
+}
+.auth-submit-btn{
+    width: 100%;
+    background-color: var(--primary);
+    outline: none;
+    border: 0;
+    margin-bottom: 25px !important;
+}
+
+
+
+@media only screen and (max-width: 625px) {
+    .auth-container{
+        flex-direction: column-reverse;
+        text-align: center;
+        margin-top: 20px;
+    }
+    .auth-area{
+        width: 100%;
+    }
+    .auth-image{
+        width: 100%;
+    }
+}
 /* progress bar styles */
-.progress-bar{
+.progress-bar-container{
+    width: 200px;
+    height: 7px;
+    border: 2px solid var(--primary);
+    margin: 10px 0 -5px 0;
+}
+
+.pic-progress-bar{
   height: 5px;
-  background: #f50057;
-  margin-top: 20px;
+  background: var(--primary);
+  /* margin-top: 20px; */
 }
 
 .username-label{
@@ -93,8 +266,12 @@
     position: relative;
     width: 200px;
     height: 50px;
+    transition: all 0.3s;
 }
 
+.file-upload-container:hover{
+    box-shadow: 0 0 9px 1px #989898;
+}
 .file-upload-container .file-upload{
     position: absolute;
     width: 100%;
@@ -912,7 +1089,38 @@
     color: white;
 }
 
+@media only screen and (max-width: 1050px) {
+    .home-text .home-heading{
+        font-size: 5em;
+    }
+    .home-text p{
+        font-size: 1.2em;
+    }
+}
+
 @media only screen and (max-width: 625px) {
+    .hide-on-mobile{
+        display: none;
+    }
+    .main-home-body {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 20px;
+    }
+    .home-text {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .home-text .home-heading {
+        font-size: 4em;
+    }
+    .home-page-image {
+        width: 100%;
+    }
     .chat-panel{
         width: 100%;
         height: 100%;
@@ -975,5 +1183,11 @@
     }
     .chat-panel .header-chat-panel .logout-button{
         font-size: 0.7em;
+    }
+    .modal-container{
+        padding: 16px 13px 24px !important;
+    }
+    .newContact-search-container .search-results-container .single-search-result{
+        padding: 0;
     }
 }

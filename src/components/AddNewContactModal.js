@@ -60,7 +60,7 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
             console.log(docDetails);
             pendingToDisplay.push(
               <div className="single-req-pending">
-                <img className="contact-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
+                <img className="contact-profile-pic" alt="Profile Picture" src={docDetails.profilePicture} />
                 <p>{docDetails.username}</p>
               </div>
             )

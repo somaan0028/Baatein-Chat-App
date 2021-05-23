@@ -59,10 +59,10 @@ const MessagingArea = ({ activeContact }) => {
         console.log(conversationID);
         setConvoID(conversationID);
 
-        let previousMsgDate = null;
-
+        
         var unsubscribe = projectFirestore.collection("conversations").doc(conversationID).onSnapshot((docRef)=>{
             if(docRef.data()){
+                let previousMsgDate = null;
                 setIsListenerSet(true);
                 var received_messages = docRef.data().messages;
                 console.log(received_messages);

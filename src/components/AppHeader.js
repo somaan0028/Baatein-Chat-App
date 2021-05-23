@@ -7,7 +7,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 import { useAuth } from "../contexts/AuthContext"
 import { useHistory } from "react-router-dom"
-import { projectFirestore} from '../firebase';
+import { projectFirestore } from '../firebase';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import AddNewContactModal from './AddNewContactModal';
@@ -78,6 +78,9 @@ const AppHeader = ({ userProfile }) => {
     }, [darkTheme])
 
     useEffect(()=>{
+
+
+
         window.addEventListener("resize", ()=>{
             setScreenWidth(window.innerWidth)
         })
@@ -88,19 +91,6 @@ const AppHeader = ({ userProfile }) => {
                 console.log("Escape pressed")
             }
         });
-
-        // bodyElement.addEventListener("fullscreenchange", (event)=>{
-        //     let chat_panel = document.querySelector(".chat-panel");
-        //     console.log("Full Screen Changed");
-        //     console.log("Is fullscreen: " + isFullscreen);
-        //     if(document.fullscreen){
-        //         chat_panel.classList.add("make-fullscreen");
-        //         setIsFullscreen(true)
-        //     }else{
-        //         chat_panel.classList.remove("make-fullscreen");
-        //         setIsFullscreen(false)
-        //     }
-        // })
 
         // so that fullscreen event listener can be used in all browsers
         const prefixes = ["", "moz", "webkit", "ms"]
@@ -167,9 +157,6 @@ const AppHeader = ({ userProfile }) => {
         }
     }
 
-    // useEffect(()=>{
-    //     console.log("Document changed");
-    // }, [document])
 
     return (
         <div className="header-chat-panel">
@@ -179,7 +166,7 @@ const AppHeader = ({ userProfile }) => {
                 <img className="header-profile-pic" alt="Profile Picture" src={userProfile.profilePicture} />
                 <div className="user-info">
                     <h2>{userProfile.username}</h2>
-                    <p>{currentUser.email}</p>
+                    <p className="hide-on-mobile">{currentUser.email}</p>
                 </div>
                 {screenWidth <= 625  &&
                 <Button variant="contained" color="secondary" className="logout-button" onClick={handleLogout}>

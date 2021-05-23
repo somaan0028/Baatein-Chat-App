@@ -5,7 +5,7 @@ import { Link, useHistory } from "react-router-dom"
 import ProfileSetup from "./ProfileSetup"
 import { CircularProgress } from '@material-ui/core';
 import ChatPanel from './ChatPanel';
-import { projectFirestore, projectDatabase } from '../firebase';
+import { projectFirestore, projectDatabase, projectStorage } from '../firebase';
 import NetworkError from "./NetworkError"
 
 
@@ -24,12 +24,13 @@ export default function Dashboard() {
     projectFirestore.collection("profiles").doc(currentUser.uid).onSnapshot((docRef)=>{
       console.log(docRef.data());
       setIsLoading(false);
-      if(!docRef.data()){
+      let receivedData = docRef.data();
+      if(!receivedData){
         console.log("No user profile found");
         setUserProfile(null);
       }else{
         console.log("User profile found");
-        setUserProfile(docRef.data());
+        setUserProfile(receivedData);
       }
     }, 
     err=>{
@@ -38,29 +39,8 @@ export default function Dashboard() {
       setError(true)
     })
 
-    // projectDatabase.ref("/status/").onDisconnect().set("Just Disconnected").then(()=>{
-    //   projectFirestore.collection("profiles").doc(currentUser.uid).update({
-    //     status: "I disconnected"
-    //   })
-    // })
-
-    // firebase.database().ref('.info/connected').on('value', function(snapshot) {
-    //   if (snapshot.val() == false) {
-    //       // Instead of simply returning, we'll also set Firestore's state
-    //       // to 'offline'. This ensures that our Firestore cache is aware
-    //       // of the switch to 'offline.'
-    //       userStatusFirestoreRef.set(isOfflineForFirestore);
-    //       return;
-    //   };
-  
-    //   userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function() {
-    //       userStatusDatabaseRef.set(isOnlineForDatabase);
-  
-    //       // We'll also add Firestore set here for when we come online.
-    //       userStatusFirestoreRef.set(isOnlineForFirestore);
-    //   });
-  // });
   }, [])
+
 
   return (
     <>

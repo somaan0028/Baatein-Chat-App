@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ProgressBar from './ProgressBar';
 
-const UploadForm = ({ setProfilePicUrl }) => {
+const UploadForm = ({ setProfilePicUrl, pictureID }) => {
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
 
@@ -11,8 +11,13 @@ const UploadForm = ({ setProfilePicUrl }) => {
     let selected = e.target.files[0];
 
     if (selected && types.includes(selected.type)) {
-      setFile(selected);
-      setError('');
+      if(selected.size > 1024000){
+        setFile(null);
+        setError('File size is larger than 1 MB!');
+      }else{
+        setFile(selected);
+        setError('');
+      }
     } else {
       setFile(null);
       setError('Please select an image file (png or jpg)');
@@ -27,7 +32,8 @@ const UploadForm = ({ setProfilePicUrl }) => {
       </label>
       <div className="output">
         { error && <div className="bad-msg">{ error }</div>}
-        { file && <ProgressBar file={file} setFile={setFile} setProfilePicUrl={setProfilePicUrl} /> }
+        { file && <ProgressBar file={file} setFile={setFile} setProfilePicUrl={setProfilePicUrl} pictureID={pictureID} /> }
+        {/* {<ProgressBar />} */}
       </div>
     </form>
   );

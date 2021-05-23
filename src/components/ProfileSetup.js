@@ -15,7 +15,10 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import UploadForm from "./UploadForm";
 import { useAuth } from "../contexts/AuthContext"
 import { useHistory } from "react-router-dom"
-
+import { createMuiTheme } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/styles";
+import pink from "@material-ui/core/colors/pink";
+import { v4 as uuidv4 } from 'uuid';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,7 +38,43 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+
 }));
+
+const materialTheme = createMuiTheme({
+  overrides: {
+    MuiPickersToolbar: {
+      toolbar: {
+        backgroundColor: pink.A200,
+      },
+    },
+    MuiPickersCalendarHeader: {
+      switchHeader: {
+        // backgroundColor: pink.A200,
+        // color: "white",
+      },
+    },
+    MuiPickersDay: {
+      day: {
+        color: pink.A700,
+      },
+      daySelected: {
+        backgroundColor: pink["400"],
+      },
+      dayDisabled: {
+        color: pink["100"],
+      },
+      current: {
+        color: pink["900"],
+      },
+    },
+    MuiPickersModal: {
+      dialogAction: {
+        color: pink["400"],
+      },
+    },
+  },
+});
 
 export default function ProfileSetup({ setUserProfile }) {
   const classes = useStyles();
@@ -47,8 +86,9 @@ export default function ProfileSetup({ setUserProfile }) {
   const [isUsernameUnique, setIsUsernameUnique] = useState(null);
   const [isLoading, setisLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date('2014-08-18T21:11:54'));
-  const [profilePicUrl, setProfilePicUrl] = useState(null);
+  const [profilePicUrl, setProfilePicUrl] = useState("https://firebasestorage.googleapis.com/v0/b/test-firestore-bc69b.appspot.com/o/dummy-profile-pic.png?alt=media");
   const [profileCreationError, setProfileCreationError] = useState("");
+  const [pictureID, setPictureID] = useState(uuidv4() + uuidv4());
 
   const handleUsername = async (e) => {
     let entered_username = e.target.value;
@@ -102,6 +142,7 @@ export default function ProfileSetup({ setUserProfile }) {
       userId: currentUser.uid,
       dateOfBirth: selectedDate,
       profilePicture: profilePicUrl,
+      // profilePicture: pictureID,
       unreadNotf: 0,
       darkTheme: false
     };
@@ -165,6 +206,7 @@ export default function ProfileSetup({ setUserProfile }) {
           {profileCreationError && <h2 className="error-profile-creation">{profileCreationError}</h2>}
           <TextField
             margin="normal"
+            color="secondary"
             required
             fullWidth
             id="username"
@@ -177,22 +219,26 @@ export default function ProfileSetup({ setUserProfile }) {
           <label htmlFor="Username" className="username-label">(Others will use your Username to search for you)</label>
           { isLoading ? <CircularProgress size={16} color="pink"/> : <span className={isUsernameUnique ? "good-msg":"bad-msg"} >{usernameError}</span>}
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <ThemeProvider theme={materialTheme}>
+
                 <KeyboardDatePicker
-                disableToolbar
+                // disableToolbar
                 variant="inline"
                 format="MM/dd/yyyy"
                 margin="normal"
                 id="date-picker-inline"
                 label="Date of Birth"
+                color="secondary"
                 // value={selectedDate}
                 onChange={handleDateChange}
                 KeyboardButtonProps={{
-                    'aria-label': 'change date',
+                  'aria-label': 'change date',
                 }}
                 />
+              </ThemeProvider>
             </MuiPickersUtilsProvider>
 
-            {<img alt="Profile Picture" src={profilePicUrl ? profilePicUrl : "https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png"} 
+            {<img alt="Profile Picture" src={profilePicUrl ? profilePicUrl : "https://firebasestorage.googleapis.com/v0/b/test-firestore-bc69b.appspot.com/o/dummy-profile-pic-300x300-1.png?alt=media&token=16776c42-a7dd-4d6c-a170-773d08b25df2"} 
             style={{
                 border: '1px solid #f50057', 
                 borderRadius: '50%', 
@@ -202,11 +248,11 @@ export default function ProfileSetup({ setUserProfile }) {
                 margin: "30px auto 30px auto"
             }} 
             /> }
-            <UploadForm setProfilePicUrl={setProfilePicUrl} />
+            <UploadForm setProfilePicUrl={setProfilePicUrl} pictureID={pictureID} />
           <Button
             fullWidth
             variant="contained"
-            color="primary"
+            color="secondary"
             className={classes.submit}
             onClick={handleProfileCreation}
             disabled={!isUsernameUnique && !isLoading}
