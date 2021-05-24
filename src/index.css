@@ -56,6 +56,7 @@ header{
     top: 0;
     left: 50%;
     transform: translateX(-50%);
+    overflow: hidden;
 }
 
 .logo{
@@ -137,13 +138,122 @@ header{
 }
 
 
+
 .parallax-div{
-    width: 100%;
-    height: 300px;
+    width: 150%;
+    height: 500px;
     background-color: rgb(255, 27, 65);
     margin-top: 70px;
+    margin-left: -100px;
     transform: skewY(348deg);
+    background-image: linear-gradient(to bottom, rgb(245, 0, 87, 0.8), rgba(245, 0, 87, 0.8)),url("parallax-image.PNG");
+    box-shadow: inset 0px 0px 80px 0px #222222;
+    /* background-attachment: fixed; */
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-size: cover; 
 }
+
+
+.app-information-div{
+    width: 100%;
+    margin: 140px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 15px;
+}
+.app-information-div .single-info{
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 50px 0;
+}
+.app-information-div .single-info h3{
+    font-family: 'Fredoka One', cursive;
+}
+.app-information-div .single-info p{
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.1em;
+}
+.app-information-div .single-info .info-gif{
+    width: 50%;
+    max-width: 340px;
+    text-align: justify;
+}
+.app-information-div .single-info .info-text{
+    width: 50%;
+    max-width: 350px;
+    text-align: justify;
+    margin: 0 15px;
+}
+
+.auth-footer{
+    width: 100%;
+    height: fit-content;
+    background-color: var(--primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 10px 100px 10px;
+    text-align: center;
+}
+
+.auth-footer h3{
+    color: white;
+    font-size: 3em;
+}
+
+.auth-footer .home-auth-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.auth-footer .home-auth-buttons button{
+    width: 100%;
+    margin: 10px;
+    max-width: 175px;
+    height: 45px;
+    padding: 0;
+    background-color: white;
+}
+.auth-footer .home-auth-buttons button span{
+    width: 100%;
+    height: 100%;
+}
+.auth-footer .home-auth-buttons button a{
+    text-decoration: none;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-width: 100px;
+    color: var(--primary);
+    transition: all 0.3s ease;
+}
+
+
+footer{
+    width: 100%;
+    height: fit-content;
+    padding: 13px 20px;
+    background-color: #ad013d;
+}
+footer .copy-right,
+footer .credit{
+    font-size: 15px;
+    color: rgb(208, 208, 208);
+}
+
+
 
 /* Login-Signup Pages */
 
@@ -1121,6 +1231,29 @@ header{
     .home-page-image {
         width: 100%;
     }
+
+    .app-information-div .single-info{
+        flex-direction: column;
+    }
+
+    .app-information-div .reverse-direction{
+        flex-direction: column-reverse;
+    }
+    .app-information-div .single-info .info-gif{
+        margin-bottom: 20px;
+    }
+    .app-information-div .single-info h3{
+        text-align: center;
+    }
+    .app-information-div .single-info .info-text{
+        width: 100%;
+        max-width: none;
+        text-align: center;
+    }
+    .app-information-div .single-info .info-gif{
+        width: 100%;
+    }
+
     .chat-panel{
         width: 100%;
         height: 100%;
@@ -1189,5 +1322,16 @@ header{
     }
     .newContact-search-container .search-results-container .single-search-result{
         padding: 0;
+    }
+}
+
+@media only screen and (max-width: 330px) {
+    .auth-footer .home-auth-buttons{
+        flex-direction: column;
+        margin: 0;
+        width: 100%;
+    }
+    .auth-footer .home-auth-buttons button{
+        width: 100%;
     }
 }
