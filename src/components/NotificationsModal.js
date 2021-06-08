@@ -3,11 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import SearchIcon from '@material-ui/icons/Search';
-import Button from '@material-ui/core/Button';
-import { CircularProgress } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import SendIcon from '@material-ui/icons/Send';
 import { projectFirestore, increment } from '../firebase';
 import { useAuth } from "../contexts/AuthContext"
 
@@ -29,10 +24,7 @@ export default function AddNewContactModal({ open, setOpen }) {
     const classes = useStyles();
 
     const { currentUser } = useAuth();
-    const [fieldText, setFieldText] = useState("");
-    const [searchResults, setSearchResults] = useState(null);
     const [notificationsRequests, setNotificationsRequests ] = useState([]);
-    const [isPending, setisPending] = useState(false);
     const [pendingContactsDisplay, setPendingContactsDisplay] = useState([]);
 
   const handleClose = () => {
@@ -49,8 +41,6 @@ export default function AddNewContactModal({ open, setOpen }) {
   // 6.  Adds the contact id of acceptor to the sender's db
   const handleAccept = (e) => {
     let idToAccept = e.target.id;
-    console.log(e.target);
-    console.log("Accept req from: " + idToAccept);
 
     // to close the notifications panel
     handleClose();
@@ -66,7 +56,6 @@ export default function AddNewContactModal({ open, setOpen }) {
         }
       });
       setNotificationsRequests(newNotificationsArray);
-      console.log("removing notification from own db");
       projectFirestore.collection("notifications").doc(currentUser.uid).update({
         notifications: newNotificationsArray
       })
@@ -84,7 +73,7 @@ export default function AddNewContactModal({ open, setOpen }) {
           newPending.push(pendingID);
         }
       });
-      console.log("Removing pending from other persons db");
+
       projectFirestore.collection("notifications").doc(idToAccept).update({
         pending: newPending,
         notifications: [...oldNotifications, {type: "req_accepted", userID: currentUser.uid}]
@@ -100,7 +89,6 @@ export default function AddNewContactModal({ open, setOpen }) {
     })
 
     // adding the contact id of person who sent the request into the account of acceptor
-    console.log("About to add new contact")
     projectFirestore.collection("contacts").doc(currentUser.uid).get()
     .then(docRef=>{
       let theContacts = [];
@@ -116,8 +104,6 @@ export default function AddNewContactModal({ open, setOpen }) {
       }else{
         theContacts = docRef.data().contacts;
         theContacts.push(newContactToAdd);
-        console.log("New contact list: ");
-        console.log(theContacts);
       }
 
       projectFirestore.collection("contacts").doc(currentUser.uid).update({
@@ -145,8 +131,6 @@ export default function AddNewContactModal({ open, setOpen }) {
       }else{
         theContacts = docRef.data().contacts;
         theContacts.push(newContactToAdd);
-        console.log("New contact list: ");
-        console.log(theContacts);
       }
 
       projectFirestore.collection("contacts").doc(idToAccept).update({
@@ -162,15 +146,13 @@ export default function AddNewContactModal({ open, setOpen }) {
   // It also add "req_declined" notification instead of "req_accepted" in the senders db
   const handleDecline = (e) => {
     let idToAccept = e.target.id;
-    console.log("Decline req from: " + idToAccept);
 
     // to close the notifications panel
     handleClose();
 
     // removing notification from own db
     let newNotificationsArray = [];
-    console.log("Looping through notificationsRequests to filter notifications:");
-    console.log(notificationsRequests);
+
     projectFirestore.collection("notifications").doc(currentUser.uid).get()
     .then(docRef=>{
       // getting own notifications and then filtering
@@ -178,13 +160,10 @@ export default function AddNewContactModal({ open, setOpen }) {
       notifications_from_own_db.forEach((notification)=>{
         if (notification.userID !== idToAccept || notification.type !== "add_request") {
           newNotificationsArray.push(notification);
-        }else{
-          console.log("REMOVING:");
-          console.log(notification);
         }
       });
       setNotificationsRequests(newNotificationsArray);
-      console.log("Declined request. Removing notification from own db");
+
       projectFirestore.collection("notifications").doc(currentUser.uid).update({
         notifications: newNotificationsArray
       });
@@ -202,7 +181,7 @@ export default function AddNewContactModal({ open, setOpen }) {
           newPending.push(pendingID);
         }
       });
-      console.log("Removing pending from other persons db");
+
       projectFirestore.collection("notifications").doc(idToAccept).update({
         pending: newPending,
         notifications: [...oldNotifications, {type: "req_declined", userID: currentUser.uid}]
@@ -221,10 +200,10 @@ export default function AddNewContactModal({ open, setOpen }) {
 
   useEffect(()=>{
   projectFirestore.collection("notifications").doc(currentUser.uid).onSnapshot(docRef=>{
-    console.log("Fetching notifications");
+
     let receivedData = docRef.data();
     var notificationsArray = receivedData.notifications;
-    console.log(notificationsArray);
+
     if(notificationsArray){
       notificationsArray.reverse();
     }
@@ -235,14 +214,13 @@ export default function AddNewContactModal({ open, setOpen }) {
         projectFirestore.collection("profiles").where("userId", "==", notification.userID).get()
         .then(querySnapshot=>{
           let retrievedDocs = querySnapshot.docs;
-          console.log(notification.userID);
+
           let docDetails =  retrievedDocs[0].data();
-          console.log(docDetails);
+
           switch (notification.type) {
             case "add_request":
-            console.log("new req notification");
               notificationsToDisplay.push(
-                <div className="single-friend-req new_request">
+              <div className="single-friend-req new_request" key={Math.floor((Math.random() * 10000000) + 1).toString()}>
                 
                 <div className="user-info">
                   <img className="contact-profile-pic" alt="Profile Picture" src={docDetails.profilePicture} />
@@ -260,7 +238,7 @@ export default function AddNewContactModal({ open, setOpen }) {
             case "req_accepted":
             notificationsToDisplay.push(
   
-                <div className="single-friend-req req-accepted">
+                <div className="single-friend-req req-accepted" key={Math.floor((Math.random() * 10000000) + 1).toString()}>
                   <img className="contact-profile-pic" alt="Profile Picture" src={docDetails.profilePicture} />
                   <p><strong>{docDetails.username}</strong> accepted your request!!!</p>
                 </div>
@@ -268,7 +246,7 @@ export default function AddNewContactModal({ open, setOpen }) {
               break;
             case "req_declined":
               notificationsToDisplay.push(
-                <div className="single-friend-req req-declined">
+                <div className="single-friend-req req-declined" key={Math.floor((Math.random() * 10000000) + 1).toString()}>
                   <img className="contact-profile-pic" alt="Profile Picture" src={docDetails.profilePicture} />
                   <p><strong>{docDetails.username}</strong> declined your request :(</p>
                 </div>
@@ -281,7 +259,6 @@ export default function AddNewContactModal({ open, setOpen }) {
   
           // console.log(notificationsToDisplay.length, )
           if(notificationsToDisplay.length >= notificationsArray.length){
-            console.log("reached here");
             setPendingContactsDisplay(notificationsToDisplay);
           }
         })

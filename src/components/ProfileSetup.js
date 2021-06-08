@@ -92,12 +92,11 @@ export default function ProfileSetup({ setUserProfile }) {
 
   const handleUsername = async (e) => {
     let entered_username = e.target.value;
-    console.log(entered_username);
     setUsername(entered_username);
 
     // if empty username field
     if(entered_username.length == 0){
-      console.log("Empty field");
+
       setUsernameError('');
       setIsUsernameUnique(null);
       setisLoading(false);
@@ -110,20 +109,16 @@ export default function ProfileSetup({ setUserProfile }) {
     projectFirestore.collection("profiles").where("username", "==", entered_username).get()
     .then((querySnapshot) => {
       setisLoading(false);
-      console.log(querySnapshot.docs.length);
 
       if(querySnapshot.docs.length == 0){
           // setUsername(username);
           setUsernameError('Good Username');
           setIsUsernameUnique(true);
-          console.log("Good Username");
       } else {
           setUsernameError('This username is already taken :(');
           setIsUsernameUnique(false);
       }
-      // querySnapshot.forEach((doc) => {
-      //     console.log(doc.data());
-      // });
+
     })
     .catch((err)=>{
       setisLoading(false);
@@ -152,11 +147,9 @@ export default function ProfileSetup({ setUserProfile }) {
     projectFirestore.collection("profiles").where("userId", "==", currentUser.uid).get()
     .then(querySnapshot=>{
       if(querySnapshot.docs.length !== 0){
-        console.log("Profile with this ID already exists")
         setProfileCreationError("*Your Profile Already Exists.")
       }else{
         setProfileCreationError("")
-        console.log("Ready to create new profile")
         setisLoading(true);
         projectFirestore.collection("profiles").doc(currentUser.uid).set(profileToSave)
         projectFirestore.collection("contacts").doc(currentUser.uid).set({
@@ -168,13 +161,15 @@ export default function ProfileSetup({ setUserProfile }) {
         })
         .then((docRef) => {
           setisLoading(false);
-          console.log(docRef);
-          projectFirestore.collection("profiles").doc(docRef.id).get()
-         .then(snap => {
-            console.log('Here is the document you wrote to', snap.data());
-            // history.push("/");
-            setUserProfile(snap.data());
-         })
+        //   console.log("THE PROFILE HAS BEEN SET")
+        //   console.log(docRef);
+        //   console.log(docRef.data());
+        //   projectFirestore.collection("profiles").doc(docRef.id).get()
+        //  .then(snap => {
+        //     console.log("Got the profile that was just saved")
+        //     console.log(snap);
+        //     setUserProfile(snap.data());
+        //  })
         })
         .catch((error) => {
             console.error("Error adding document: ", error);
@@ -197,7 +192,6 @@ export default function ProfileSetup({ setUserProfile }) {
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar} style={{width: "60px", height: "60px"}}>
-          {/* <LockOutlinedIcon /> */}
           <AccountCircleRoundedIcon style={{width: "60px", height: "60px"}} />
         </Avatar>
         <Typography component="h1" variant="h5" style={{margin: "0 0 5px 0"}}>
@@ -217,7 +211,7 @@ export default function ProfileSetup({ setUserProfile }) {
             style={{marginBottom: "0"}}
           />
           <label htmlFor="Username" className="username-label">(Others will use your Username to search for you)</label>
-          { isLoading ? <CircularProgress size={16} color="pink"/> : <span className={isUsernameUnique ? "good-msg":"bad-msg"} >{usernameError}</span>}
+          { isLoading ? <CircularProgress size={16} color="secondary"/> : <span className={isUsernameUnique ? "good-msg":"bad-msg"} >{usernameError}</span>}
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <ThemeProvider theme={materialTheme}>
 

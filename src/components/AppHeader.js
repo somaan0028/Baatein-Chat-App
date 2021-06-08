@@ -56,7 +56,7 @@ const AppHeader = ({ userProfile }) => {
     }
 
     useEffect(()=>{
-        console.log("Dark Theme: " + darkTheme);
+
         let root = document.querySelector(':root');
         if(darkTheme){
             // dark theme ON
@@ -88,7 +88,7 @@ const AppHeader = ({ userProfile }) => {
         bodyElement.addEventListener("keypress", (event) =>{
             if (event.key == "Escape") {
                 handleFullscreen()
-                console.log("Escape pressed")
+
             }
         });
 
@@ -128,10 +128,10 @@ const AppHeader = ({ userProfile }) => {
     }
 
     const handleFullscreen = ()=>{
-        // let chat_panel = document.querySelector(".chat-panel")
+
         let fullscreenElem = document.getElementsByTagName("body")[0];
         if(!isFullscreen){
-            // chat_panel.classList.add("make-fullscreen");
+
             if (fullscreenElem.requestFullscreen) {
                 fullscreenElem.requestFullscreen();
               } else if (fullscreenElem.webkitRequestFullscreen) { /* Safari */
@@ -142,7 +142,7 @@ const AppHeader = ({ userProfile }) => {
             setIsFullscreen(true)
         }else{
             if(document.fullscreenElement){
-                // chat_panel.classList.remove("make-fullscreen");
+
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.webkitExitFullscreen) { /* Safari */
@@ -150,8 +150,6 @@ const AppHeader = ({ userProfile }) => {
                 } else if (document.msExitFullscreen) { /* IE11 */
                     document.msExitFullscreen();
                 }
-            }else{
-                console.log("Not full screen")
             }
             setIsFullscreen(false)
         }

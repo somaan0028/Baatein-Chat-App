@@ -13,21 +13,19 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
     const [backUpContactsList, setbackUpContactsList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [noContacts, setNoContacts] = useState(false)
-
+    const [initialContactsDisplayed, setInitialContactsDisplayed] = useState(false);
 
     useEffect(()=>{
         // everytime the document in "contacts" changes, they are loaded again, ordered and set to the state named contactsFromDB
         projectFirestore.collection("contacts").doc(currentUser.uid).onSnapshot((docRef)=>{
 
             let receivedContacts = docRef.data().contacts;
-            console.log("something changed in contacts collection");
 
             // ordering w.r.t to latest message
             receivedContacts.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
-            console.log("setting contactsFromDB");
 
             if(receivedContacts.length == 0){
-                console.log("NO CONTACTS!")
+
                 setContactsList([]);
                 setbackUpContactsList([]);
                 setIsLoading(false);
@@ -44,7 +42,7 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
     // this function replaces the unread value of the data associated with the activeContact
     const resetUnreadAmount = (modifiedContact) => {
         var newContacts = [];
-        console.log("modified contact");
+
         contactsFromDB.forEach((contact)=>{
             if(contact.userID == activeContact.userID){
                 newContacts.push(modifiedContact);
@@ -60,8 +58,10 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
     const convert24HourTo12Hour = (hrEle, minEle)=>{
         if(hrEle>=0 && hrEle<=24 && minEle >=0 && minEle <= 60){
             let AMorPM='AM';
-            if(hrEle>12)AMorPM='PM';
-            hrEle = (hrEle % 12);
+            if(hrEle>=12)AMorPM='PM';
+            if(hrEle!==12){
+                hrEle = (hrEle % 12);
+            }
             if(minEle < 10){minEle = "0" + minEle}
             return hrEle+':'+minEle+' '+AMorPM;
         }
@@ -71,15 +71,15 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
 
     // runs when the state contactsFromDB changes
     useEffect(()=>{
-        console.log("contacts changed");
+
         let tempArray = [];
         contactsFromDB.forEach((contact)=>{
-            console.log(contact)
+
             projectFirestore.collection("profiles").doc(contact.userID).get()
             .then((docRef)=>{
 
                 if(!docRef.data()){
-                    console.log("Contact not found");
+                    // console.log("Contact not found");
 
                 }else{
 
@@ -138,8 +138,10 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
 
     // to add a className to selected contact, we filter through the contactsList and replace the one selected with a new component.
     useEffect(()=>{
-        if(!activeContact){return};
-        console.log("activeContact changed!!!!!");
+        if(!activeContact && !initialContactsDisplayed){
+            setInitialContactsDisplayed(true);
+            return
+        };
 
         document.querySelector("#bar-for-searching-contacts").value = "";     // clearing search bar
 
@@ -147,7 +149,7 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
         let updatedUnreadContactList = [];
         
         contactsFromDB.forEach((contact)=>{
-            if(contact.userID == activeContact.userID){
+            if(activeContact && contact.userID == activeContact.userID){
                 updatedUnreadContactList.push({
                     latestTimestamp: contact.latestTimestamp,
                     unread: 0,
@@ -158,8 +160,7 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                 updatedUnreadContactList.push(contact);
             }
         })
-        console.log("Here is the updated contacts with unread set to 0");
-        console.log(updatedUnreadContactList);
+
         projectFirestore.collection("contacts").doc(currentUser.uid).set({
             contacts: updatedUnreadContactList
         })
@@ -167,7 +168,7 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
         let newContactList = [];
         backUpContactsList.forEach((contactComponent)=>{
             newContactList.push(<SingleContact 
-                key={contactComponent.props.key} 
+                key={contactComponent.props.id} 
                 id={contactComponent.props.id} 
                 contactName={contactComponent.props.contactName}
                 contactDetails={contactComponent.props.contactDetails} 
@@ -176,7 +177,6 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                 profilePicture={contactComponent.props.profilePicture}
                 timeToDisplay={contactComponent.props.timeToDisplay}
             />);
-            // console.log(contactComponent);
         })
         setContactsList(newContactList);
         setbackUpContactsList(newContactList);
@@ -195,9 +195,6 @@ const ContactsArea = ({ activeContact, setActiveContact }) => {
                     <p className="no-contacts-text">Add new Contacts!</p>
                 </div>}
                 {!isLoading && !noContacts && contactsList}
-
-                {/* {isLoading ? <CircularProgress className="contacts-loading-sign" size={30}/> 
-                : contactsList} */}
 
             </div>
         </div>

@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 export default function SingleContact({ id, contactName, contactDetails, activeContact, setActiveContact, profilePicture, timeToDisplay }) {
 
-    // console.log(activeContact);
 
     const handleOnClick = (e) => {
-        console.log(e.target);
         if(window.innerWidth <= 625){
             document.querySelector(".contacts-area").style.transform = "translate(-1000px)"
         }
@@ -14,7 +12,6 @@ export default function SingleContact({ id, contactName, contactDetails, activeC
             userID: e.target.id,
             profilePicture: e.target.parentNode.querySelector(".contact-profile-pic").src
         }
-        console.log();
         setActiveContact(newActiveContact);
     }
 
@@ -22,9 +19,7 @@ export default function SingleContact({ id, contactName, contactDetails, activeC
         return timestamp;
     }
 
-    useEffect(()=>{
-        console.log("contact details changed");
-    }, [contactDetails])
+
 
     return(
         <div className={activeContact && id==activeContact.userID ? "single-contact selected-contact" : "single-contact"} >

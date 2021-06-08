@@ -311,7 +311,7 @@ footer .credit{
     .auth-container{
         flex-direction: column-reverse;
         text-align: center;
-        margin-top: 20px;
+        margin-top: 40px;
     }
     .auth-area{
         width: 100%;

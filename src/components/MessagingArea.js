@@ -7,9 +7,8 @@ import TypingArea from './TypingArea';
 import { IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-const MessagingArea = ({ activeContact }) => {
-    // console.log("The active contact ID is: ");
-    // console.log(activeContact);
+const MessagingArea = ({ activeContact, setActiveContact }) => {
+
     const { currentUser } = useAuth()
     const [messages, setMessages] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +28,10 @@ const MessagingArea = ({ activeContact }) => {
     const convert24HourTo12Hour = (hrEle, minEle)=>{
         if(hrEle>=0 && hrEle<=24 && minEle >=0 && minEle <= 60){
             let AMorPM='AM';
-            if(hrEle>12)AMorPM='PM';
-            hrEle = (hrEle % 12);
+            if(hrEle>=12)AMorPM='PM';
+            if(hrEle!==12){
+                hrEle = (hrEle % 12);
+            }
             if(minEle < 10){minEle = "0" + minEle}
             return hrEle+':'+minEle+' '+AMorPM;
         }
@@ -46,7 +47,6 @@ const MessagingArea = ({ activeContact }) => {
 
         // as function is running again, it means activeContact changed so we need to remove previous listener
         if(isListenerSet){
-            console.log("removed the listener");
             removeListener();
         };
 
@@ -56,7 +56,7 @@ const MessagingArea = ({ activeContact }) => {
         
         setIsLoading(true);
         let conversationID = generateConvoID(currentUser.uid, activeContact.userID);
-        console.log(conversationID);
+
         setConvoID(conversationID);
 
         
@@ -65,9 +65,8 @@ const MessagingArea = ({ activeContact }) => {
                 let previousMsgDate = null;
                 setIsListenerSet(true);
                 var received_messages = docRef.data().messages;
-                console.log(received_messages);
                 var newMessagesArray = [];
-                console.log(conversationID);
+
                 received_messages.forEach((message)=>{
 
                     let date = new Date(message.timestamp.seconds*1000);
@@ -75,14 +74,14 @@ const MessagingArea = ({ activeContact }) => {
                     let currentMsgDate = getFullDate(date.getDate(), date.getMonth(), date.getFullYear());
                     if(currentMsgDate !== previousMsgDate){
                         newMessagesArray.push(
-                            <div className="msg-date-container">
+                            <div className="msg-date-container" key={Math.floor((Math.random() * 10000000) + 1).toString()} >
                                 <p className="msg-date">{currentMsgDate}</p>
                             </div>
                         )
                         previousMsgDate = currentMsgDate;
                     }
                     newMessagesArray.push(
-                        <SingleMessage message={message} msgTime={msgTime}/>
+                        <SingleMessage key={Math.floor((Math.random() * 10000000) + 1).toString()}  message={message} msgTime={msgTime}/>
                     );
                 })
                 setMessages(received_messages);
@@ -97,15 +96,17 @@ const MessagingArea = ({ activeContact }) => {
 
             // scrolling to latest msg
             var objDiv = document.querySelector(".chat-msg-area");
-            objDiv.scrollTop = objDiv.scrollHeight;
+            if(objDiv){
+                objDiv.scrollTop = objDiv.scrollHeight;
+            }
         });
 
 
     }, [activeContact])
 
     const slideInContacts = ()=>{
-        console.log("Sliding in contacts")
-        document.querySelector(".contacts-area").style.transform = "translate(0)"
+        setActiveContact(null);
+        document.querySelector(".contacts-area").style.transform = "translate(0)";
     }
 
     return (

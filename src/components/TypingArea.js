@@ -11,15 +11,14 @@ const TypingArea = ({ activeContact, convoID, messages }) => {
     const handleSubmit = (e)=>{
         e.preventDefault();
         if(!typedText){return};
-        console.log(typedText);
+
         let msgTimestamp = timestamp.now();
         let newMsg = {
             text: typedText,
             senderID: currentUser.uid,
             timestamp: msgTimestamp
         }
-        console.log("Time now:")
-        console.log(timestamp.now().toDate())
+
         projectFirestore.collection("conversations").doc(convoID).set({
             messages: [...messages, newMsg]
         })

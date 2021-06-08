@@ -47,7 +47,7 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
     projectFirestore.collection("notifications").doc(currentUser.uid).onSnapshot(docRef=>{
       let receivedData = docRef.data();
       var pendingArray = receivedData.pending;
-      console.log(pendingArray);
+
       setPendingRequests(pendingArray);
       let pendingToDisplay = [];
       if(pendingArray){
@@ -57,16 +57,16 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
           .then(querySnapshot=>{
             let retrievedDocs = querySnapshot.docs;
             let docDetails =  retrievedDocs[0].data();
-            console.log(docDetails);
+
             pendingToDisplay.push(
-              <div className="single-req-pending">
-                <img className="contact-profile-pic" alt="Profile Picture" src={docDetails.profilePicture} />
+              <div className="single-req-pending" key={Math.floor((Math.random() * 10000000) + 1).toString()}>
+                <img className="contact-profile-pic" alt="Profile" src={docDetails.profilePicture} />
                 <p>{docDetails.username}</p>
               </div>
             )
-            // console.log(pendingToDisplay.length, )
+
             if(pendingToDisplay.length >= pendingArray.length){
-              console.log("reached here");
+
               setPendingContactsDisplay(pendingToDisplay);
             }
           })
@@ -89,18 +89,17 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
     setIsLoadingSearchResults(true);
     setisPending(false);
     setFieldText(enteredText);
-    console.log(enteredText);
 
+    
     if(!enteredText){return};
 
 
 
     // query db. set loading to false. set searchResults. set fieldText to 
-    console.log("Searching for: " + enteredText);
     projectFirestore.collection("profiles").where("username", "==", enteredText).get()
     .then((querySnapshot)=>{
         let docs = querySnapshot.docs;
-        console.log(docs.length);
+
         if(docs.length == 0){
             setIsOwnUsername(false)
             setSearchResults(false);
@@ -108,7 +107,7 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
             let userData = docs[0].data();
 
             if(userProfile.username == userData.username){
-              console.log("This your own username!");
+
               setIsOwnUsername(true)
               setContactAlreadyExists(false)
               setisPending(false);
@@ -136,7 +135,7 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
               setSearchResults(docs[0].data())
             }
         }
-        console.log(querySnapshot.docs[0].data());
+
         setIsLoadingSearchResults(false);
     })
     .catch((err)=>{
@@ -150,7 +149,7 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
   // 2. increaments unreadNotf of the person who received the request
   // 3. add a contact id (of the one to whom request is sent to) to the pending list of the sender
   const handleRequest = ()=>{
-    console.log("Send request to " + searchResults.username + " : " + searchResults.userId);
+
     setisPending(true);
 
     // add a new notification for the one to whom request is sent
@@ -158,7 +157,7 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
     .then((docRef)=>{
 
       var oldNotifications = docRef.data().notifications;
-      console.log(oldNotifications);
+
       let newRequest = {
         "userID": currentUser.uid,
         "type": "add_request"
@@ -182,8 +181,8 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
     .then((docRef)=>{
 
       var oldPending = docRef.data().pending;
-      console.log(oldPending);
 
+      
       projectFirestore.collection("notifications").doc(currentUser.uid).set({
         notifications: docRef.data().notifications,
         pending: [...oldPending, searchResults.userId],
@@ -196,9 +195,7 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
 
   return (
     <div className="add-new-contact-modal">
-      {/* <button type="button" onClick={handleOpen}>
-        react-transition-group
-      </button> */}
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -268,10 +265,7 @@ export default function AddNewContactModal({ open, setOpen, userProfile }) {
                   : 
                     <p className="small-msg">No pending requests at the moment.</p>
                   }
-                  {/* <div className="single-req-pending">
-                    <img className="contact-profile-pic" alt="Profile Picture" src="https://www.worldfuturecouncil.org/wp-content/uploads/2020/02/dummy-profile-pic-300x300-1.png" />
-                    <p>Dummy Name</p>
-                  </div> */}
+
                 </div>
             </div>
           </div>
