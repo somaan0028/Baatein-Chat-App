@@ -24,7 +24,8 @@ export default function Home() {
                 <img className="home-page-image" src="auth-page-image.gif"/>
             </div>
             <div className="parallax-div">
-                {/* <img src="parallax-image.jpg" /> */}
+                <img src="parallax-image.PNG" />
+                <div className="image-overlay"></div>
             </div>
             <div className="app-information-div">
                 <div className="single-info">
@@ -61,8 +62,10 @@ export default function Home() {
                 </div>
             </div>
             <footer>
-                <p className="copy-right">2021 © Baatein</p>
-                <p className="credit">Created by Somaan Shakeel</p>
+                <div className="footer-div">
+                    <p className="copy-right">2021 © Baatein</p>
+                    <p className="credit">Created by Somaan Shakeel</p>
+                </div>
             </footer>
         </div>
     )

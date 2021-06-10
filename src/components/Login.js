@@ -1,13 +1,14 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { Form, Card, Alert } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link, useHistory } from "react-router-dom"
 import Button from '@material-ui/core/Button';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 export default function Login() {
   const emailRef = useRef()
   const passwordRef = useRef()
-  const { login } = useAuth()
+  const { currentUser, login } = useAuth()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const history = useHistory()
@@ -22,10 +23,17 @@ export default function Login() {
       setLoading(false)
       history.push("/dashboard")
     } catch {
-      setError("Failed to log in")
+      setError("Failed to log in");
+      setLoading(false)
     }
 
   }
+
+  useEffect(()=>{
+    if(currentUser){
+      history.push("/dashboard")
+    }
+  }, [])
 
   return (
     <div className="auth-container">
@@ -47,12 +55,15 @@ export default function Login() {
             Log In
           </Button>
         </Form>
-        <div className="auth-links-container">
+        {/* <div className="auth-links-container">
           <Link to="/forgot-password" className="auth-links">Forgot Password?</Link>
-        </div>
+        </div> */}
 
         <div>
           Need an account? <Link to="/signup" className="auth-links">Sign Up</Link>
+        </div>
+        <div className="back-to-home-div">
+          <Link to="/" className="auth-links back-to-home-btn"><ArrowBackIcon className="back-icon back-to-home-icon" /> Back to Home</Link>
         </div>
       </div>
     </div>

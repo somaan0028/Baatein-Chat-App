@@ -4,20 +4,22 @@ import 'firebase/firestore';
 import 'firebase/storage';
 import 'firebase/database';
 
+
 const app = firebase.initializeApp({
-  apiKey: "AIzaSyCj2NII-9J52Pd5Jb2U5mthzPwMmmfOIgY",
-  authDomain: "test-firestore-bc69b.firebaseapp.com",
-  projectId: "test-firestore-bc69b",
-  storageBucket: "test-firestore-bc69b.appspot.com",
-  messagingSenderId: "881812761789",
-  appId: "1:881812761789:web:2c185e0a60bb7652ad9bd4"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 })
+
+
 
 const auth = app.auth();
 const projectFirestore = app.firestore();
 const projectStorage = app.storage();
 const projectDatabase = firebase.database();
-// const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 const timestamp = firebase.firestore.Timestamp;
 const increment = firebase.firestore.FieldValue.increment(1);
 
