@@ -11,4 +11,4 @@ Baatein is a sophisticated Chat Application that can be used for one-to-one mess
 
 ## How it's made
 
-This app is written using modern React JS features such as Hooks and the Context API. Authentication of users is done using Firebase Authentication. Moreover, Firebase's Realtime Database is used to send and receive messages and notifications. The User Interface is mostly written in pure CSS but Material UI was also used for styling some components
+This app is written using modern React JS features such as Hooks and the Context API. Authentication of users is done using Firebase Authentication. Moreover, Firebase's Realtime Database is used to send and receive messages and notifications. The User Interface is mostly written in pure CSS but Material UI was also used for styling some components.
