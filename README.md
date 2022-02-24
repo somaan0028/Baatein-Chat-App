@@ -2,7 +2,7 @@
 
 Baatein is a sophisticated Chat Application that can be used for one-to-one messaging. You can add friends from all across the world and chat all day long!
 
-## Technologies
+## Technologies Used
 
 1. React JS 
 2. Firebase 
